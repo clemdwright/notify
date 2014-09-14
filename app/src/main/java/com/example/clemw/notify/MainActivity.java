@@ -6,6 +6,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -49,14 +51,15 @@ public class MainActivity extends Activity {
                         .setContentTitle("Current time")
                         //Sets the text
                         .setContentText("It is " + minute + " past.")
+                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
+                        .setPriority(2)
                         //Removes notification when it is opened on phone
                         .setAutoCancel(true);
 
-        // Calls a private method to set up the inbox style
-        NotificationCompat.InboxStyle inboxStyle = createInboxStyle();
-
         // Moves the big view style object into the notification
-        mBuilder.setStyle(inboxStyle);
+//        mBuilder.setStyle(createBigTextStyle());
+//        mBuilder.setStyle(createInboxStyle());
+        mBuilder.setStyle(createBigPictureStyle());
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -94,6 +97,35 @@ public class MainActivity extends Activity {
         mNotificationManager.notify(mId, notification);
     }
 
+    private NotificationCompat.BigTextStyle createBigTextStyle() {
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+
+        // Sets a long string for the text
+        bigTextStyle.bigText("This is a very long string that has lots to say about the world and all of the lovely things in it and all the things we will do one day when we have the time and the money and the freedom and the desire.");
+
+        // Sets a title for the big text view
+        bigTextStyle.setBigContentTitle("Words of inspiration");
+
+        return bigTextStyle;
+    }
+
+    private NotificationCompat.BigPictureStyle createBigPictureStyle() {
+        NotificationCompat.BigPictureStyle bigPictureStyle =
+                new NotificationCompat.BigPictureStyle();
+
+        // Create bitmap from resource
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
+
+        // Add the bitmap to the big picture style
+        bigPictureStyle.bigPicture(bitmap);
+
+        // Sets a title for the big picture view
+        bigPictureStyle.setBigContentTitle("Picture of Lou Reed");
+
+        return bigPictureStyle;
+    }
+
     private NotificationCompat.InboxStyle createInboxStyle() {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
@@ -109,11 +141,16 @@ public class MainActivity extends Activity {
         // Sets a title for the Inbox style big view
         inboxStyle.setBigContentTitle("Event tracker details");
 
+        // Sets summary text for the Inbox style big view.
+        inboxStyle.setSummaryText("This is the summary text");
+
         // Moves events into the big view
         for (int i = 0; i < events.length; i++) {
             inboxStyle.addLine(events[i]);
         }
 
+        // Note: you need to drag to expand this info on phone;
+        // On watch, it comes already expanded
         return inboxStyle;
     }
 
