@@ -88,9 +88,17 @@ public class MainActivity extends Activity {
                             // Sets the progress indicator to a max value, the
                             // current completion percentage, and "determinate"
                             // state
-                            mBuilder.setProgress(100, i, false);
-                            // Displays the progress bar for the first time.
+
+                            // Determinate progress bar
+//                            mBuilder.setProgress(100, i, false);
+
+                            // Indeterminate progress indicator
+                            // Sets an activity indicator for an operation of indeterminate length
+                            mBuilder.setProgress(0, 0, true);
+
+//                            // Displays the progress bar for the first time.
                             mNotificationManager.notify(mProgressNotificationId, mBuilder.build());
+
                             // Sleeps the thread, simulating an operation
                             // that takes time
                             try {
