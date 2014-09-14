@@ -1,7 +1,9 @@
 package com.example.clemw.notify;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +22,22 @@ public class ResultActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.result, menu);
         return true;
+    }
+
+
+    // Clem added
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+
+
+
+//            String action = intent.getExtras().getString("action");
+            Log.d("ResultActivity", intent.toString());
+        }
     }
 
     @Override

@@ -123,7 +123,7 @@ public class MainActivity extends Activity {
                         Notification notification = mBuilder.build();
 
                         // Set sound, lights, and vibrate to default for the new "complete" notification
-                        notification.defaults = Notification.DEFAULT_ALL;
+//                        notification.defaults = Notification.DEFAULT_ALL;
 
                         // Issue the notification
                         mNotificationManager.notify(mNotificationId, notification);
@@ -140,6 +140,9 @@ public class MainActivity extends Activity {
 
     //https://developer.android.com/training/wearables/notifications/creating.html
     private void sendNotification(int minute) {
+
+        // mId allows you to update the notification later on.
+        int mNotificationId = 1;
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -159,6 +162,24 @@ public class MainActivity extends Activity {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+
+
+
+        // Sets up the Snooze and Dismiss action buttons that will appear in the
+// big view of the notification.
+        Intent beenIntent = new Intent(this, PingService.class);
+        beenIntent.putExtra("id", mNotificationId);
+
+        Bundle extras = beenIntent.getExtras();
+        Log.d("Extras", extras.toString());
+
+        beenIntent.setAction("ACTION_BEEN");
+        PendingIntent piBeen = PendingIntent.getService(this, 0, beenIntent, 0);
+
+        Intent saveIntent = new Intent(this, PingService.class);
+        saveIntent.setAction("ACTION_SAVE");
+        PendingIntent piSave = PendingIntent.getService(this, 0, saveIntent, 0);
+
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 //Sets the small icon
@@ -171,9 +192,9 @@ public class MainActivity extends Activity {
                 .setPriority(2)
                         // Sets the like action on the notification
                 .addAction (R.drawable.ic_been,
-                        getString(R.string.been), resultPendingIntent)
+                        getString(R.string.been), piBeen)
                 .addAction (R.drawable.ic_save,
-                        getString(R.string.save), resultPendingIntent)
+                        getString(R.string.save), piSave)
                         //Removes notification when it is opened on phone
                 .setAutoCancel(true);
 
@@ -187,8 +208,7 @@ public class MainActivity extends Activity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-        // mId allows you to update the notification later on.
-        int mNotificationId = 1;
+
 
 
         // To create the notification itself, you call NotificationCompat.Builder.build(), which returns a Notification object containing your specifications.
