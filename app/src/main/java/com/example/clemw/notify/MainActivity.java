@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         // Moves the big view style object into the notification
 //        mBuilder.setStyle(createBigTextStyle());
 //        mBuilder.setStyle(createInboxStyle());
-        mBuilder.setStyle(createBigPictureStyle());
+//        mBuilder.setStyle(createBigPictureStyle());
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -84,17 +84,34 @@ public class MainActivity extends Activity {
 
 
 
-        // To create the notification itself, you call NotificationCompat.Builder.build(), which returns a Notification object containing your specifications.
-        Notification notification = mBuilder.build();
 
-        // Set sound, lights, and vibrate to default
-        notification.defaults = Notification.DEFAULT_ALL;
+
+
 
         // mId allows you to update the notification later on.
-        int mId = 001;
+        int mNotificationId = 1;
+
 
         // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
-        mNotificationManager.notify(mId, notification);
+
+
+        // Loop to test adjusting the number of messages
+        for (int i = 0; i < 10; i++) {
+
+
+            // setNumber sets the number of messages in the stack I think, in the lower right
+            mBuilder.setContentText("It is " + minute + " past.").setNumber(i);
+
+            // To create the notification itself, you call NotificationCompat.Builder.build(), which returns a Notification object containing your specifications.
+            Notification notification = mBuilder.build();
+
+            // Set sound, lights, and vibrate to default
+            notification.defaults = Notification.DEFAULT_ALL;
+
+            mNotificationManager.notify(mNotificationId, notification);
+        }
+
+
     }
 
     private NotificationCompat.BigTextStyle createBigTextStyle() {
