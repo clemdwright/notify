@@ -6,5 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="result_text">This is the result activity.</string>
+    <string name="like">Like</string>
+    <string name="save">Save</string>
+    <string name="been">Been</string>
 
 </resources>

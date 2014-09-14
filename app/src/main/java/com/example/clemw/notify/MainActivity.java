@@ -31,26 +31,14 @@ public class MainActivity extends Activity {
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-//                sendNotification(getCurrentMinute());
-                sendProgressNotification();
+                sendNotification(getCurrentMinute());
+//                sendProgressNotification();
             }
         });
     }
 
     private void sendProgressNotification() {
 
-        // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
-        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                //Sets the small icon
-                .setSmallIcon(R.drawable.ic_notification_icon)
-                        //Sets the title
-                .setContentTitle("Picture download")
-                        //Sets the text
-                .setContentText("Download in progress.")
-                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
-                .setPriority(2)
-                        //Removes notification when it is opened on phone
-                .setAutoCancel(true);
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -69,6 +57,20 @@ public class MainActivity extends Activity {
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
+
+        // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                //Sets the small icon
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                        //Sets the title
+                .setContentTitle("Picture download")
+                        //Sets the text
+                .setContentText("Download in progress.")
+                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
+                .setPriority(2)
+                        //Removes notification when it is opened on phone
+                .setAutoCancel(true);
+
         mBuilder.setContentIntent(resultPendingIntent);
         final NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -139,24 +141,6 @@ public class MainActivity extends Activity {
     //https://developer.android.com/training/wearables/notifications/creating.html
     private void sendNotification(int minute) {
 
-        // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
-        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                //Sets the small icon
-                .setSmallIcon(R.drawable.ic_notification_icon)
-                        //Sets the title
-                .setContentTitle("Current time")
-                        //Sets the text
-                .setContentText("It is " + minute + " past.")
-                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
-                .setPriority(2)
-                        //Removes notification when it is opened on phone
-                .setAutoCancel(true);
-
-        // Moves the big view style object into the notification
-//        mBuilder.setStyle(createBigTextStyle());
-//        mBuilder.setStyle(createInboxStyle());
-//        mBuilder.setStyle(createBigPictureStyle());
-
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
 
@@ -174,6 +158,30 @@ public class MainActivity extends Activity {
                         0,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
+
+        // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
+        android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                //Sets the small icon
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                        //Sets the title
+                .setContentTitle("Current time")
+                        //Sets the text
+                .setContentText("It is " + minute + " past.")
+                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
+                .setPriority(2)
+                        // Sets the like action on the notification
+                .addAction (R.drawable.ic_been,
+                        getString(R.string.been), resultPendingIntent)
+                .addAction (R.drawable.ic_save,
+                        getString(R.string.save), resultPendingIntent)
+                        //Removes notification when it is opened on phone
+                .setAutoCancel(true);
+
+        // Moves the big view style object into the notification
+//        mBuilder.setStyle(createBigTextStyle());
+//        mBuilder.setStyle(createInboxStyle());
+//        mBuilder.setStyle(createBigPictureStyle());
+
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
