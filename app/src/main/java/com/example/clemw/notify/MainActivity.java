@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,9 +31,96 @@ public class MainActivity extends Activity {
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                sendNotification(getCurrentMinute());
+//                sendNotification(getCurrentMinute());
+                sendProgressNotification();
             }
         });
+    }
+
+    private void sendProgressNotification() {
+
+        // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                //Sets the small icon
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                        //Sets the title
+                .setContentTitle("Picture download")
+                        //Sets the text
+                .setContentText("Download in progress.")
+                        //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
+                .setPriority(2)
+                        //Removes notification when it is opened on phone
+                .setAutoCancel(true);
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, ResultActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the started Activity.
+        // This ensures that navigating backward from the Activity leads out of your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(ResultActivity.class);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        final NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // mId allows you to update the notification later on.
+        final int mProgressNotificationId = 0;
+        final int mNotificationId = 1;
+
+// Start a lengthy operation in a background thread
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        int i;
+                        // Do the "lengthy" operation 20 times
+                        for (i = 0; i <= 100; i+=5) {
+                            // Sets the progress indicator to a max value, the
+                            // current completion percentage, and "determinate"
+                            // state
+                            mBuilder.setProgress(100, i, false);
+                            // Displays the progress bar for the first time.
+                            mNotificationManager.notify(mProgressNotificationId, mBuilder.build());
+                            // Sleeps the thread, simulating an operation
+                            // that takes time
+                            try {
+                                // Sleep for 1 second
+                                Thread.sleep(1*1000);
+                            } catch (InterruptedException e) {
+                                Log.d("MainActivity", "sleep failure");
+                            }
+                        }
+
+                        // When the loop has finished, removes the notification that has the progress bar on it
+                        mNotificationManager.cancel(mProgressNotificationId);
+
+                        // Updates the notification text for the new notification
+                        mBuilder.setContentText("Download complete")
+                                // Removes the progress bar on the new notification
+                                .setProgress(0, 0, false);
+
+                        // Build a new notification object
+                        Notification notification = mBuilder.build();
+
+                        // Set sound, lights, and vibrate to default for the new "complete" notification
+                        notification.defaults = Notification.DEFAULT_ALL;
+
+                        // Issue the notification
+                        mNotificationManager.notify(mNotificationId, notification);
+                    }
+                }
+// Starts the thread by calling the run() method in its Runnable
+        ).start();
     }
 
     public int getCurrentMinute() {
@@ -45,16 +133,16 @@ public class MainActivity extends Activity {
 
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
-                        //Sets the small icon
-                        .setSmallIcon(R.drawable.ic_notification_icon)
+                //Sets the small icon
+                .setSmallIcon(R.drawable.ic_notification_icon)
                         //Sets the title
-                        .setContentTitle("Current time")
+                .setContentTitle("Current time")
                         //Sets the text
-                        .setContentText("It is " + minute + " past.")
+                .setContentText("It is " + minute + " past.")
                         //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
-                        .setPriority(2)
+                .setPriority(2)
                         //Removes notification when it is opened on phone
-                        .setAutoCancel(true);
+                .setAutoCancel(true);
 
         // Moves the big view style object into the notification
 //        mBuilder.setStyle(createBigTextStyle());
@@ -83,33 +171,18 @@ public class MainActivity extends Activity {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 
-
-
-
-
-
         // mId allows you to update the notification later on.
         int mNotificationId = 1;
 
 
+        // To create the notification itself, you call NotificationCompat.Builder.build(), which returns a Notification object containing your specifications.
+        Notification notification = mBuilder.build();
+
+        // Set sound, lights, and vibrate to default
+        notification.defaults = Notification.DEFAULT_ALL;
+
         // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
-
-
-        // Loop to test adjusting the number of messages
-        for (int i = 0; i < 10; i++) {
-
-
-            // setNumber sets the number of messages in the stack I think, in the lower right
-            mBuilder.setContentText("It is " + minute + " past.").setNumber(i);
-
-            // To create the notification itself, you call NotificationCompat.Builder.build(), which returns a Notification object containing your specifications.
-            Notification notification = mBuilder.build();
-
-            // Set sound, lights, and vibrate to default
-            notification.defaults = Notification.DEFAULT_ALL;
-
-            mNotificationManager.notify(mNotificationId, notification);
-        }
+        mNotificationManager.notify(mNotificationId, notification);
 
 
     }
