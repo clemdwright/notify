@@ -52,6 +52,11 @@ public class MainActivity extends Activity {
                         //Removes notification when it is opened on phone
                         .setAutoCancel(true);
 
+        // Calls a private method to set up the inbox style
+        NotificationCompat.InboxStyle inboxStyle = createInboxStyle();
+
+        // Moves the big view style object into the notification
+        mBuilder.setStyle(inboxStyle);
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -87,6 +92,29 @@ public class MainActivity extends Activity {
 
         // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
         mNotificationManager.notify(mId, notification);
+    }
+
+    private NotificationCompat.InboxStyle createInboxStyle() {
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        String[] events = new String[6];
+
+        events[0] = "Event 1";
+        events[1] = "Event 2";
+        events[2] = "Event 3";
+        events[3] = "Event 4";
+        events[4] = "Event 5";
+        events[5] = "Event 6";
+
+        // Sets a title for the Inbox style big view
+        inboxStyle.setBigContentTitle("Event tracker details");
+
+        // Moves events into the big view
+        for (int i = 0; i < events.length; i++) {
+            inboxStyle.addLine(events[i]);
+        }
+
+        return inboxStyle;
     }
 
 
