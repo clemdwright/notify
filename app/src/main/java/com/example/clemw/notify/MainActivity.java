@@ -24,7 +24,7 @@ import java.util.Calendar;
 public class MainActivity extends Activity {
 
     private Button button;
-    private int mNotificationId;
+//    private int mNotificationId;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 //                sendProgressNotification();
             }
         });
-        mNotificationId = 0;
+//        mNotificationId = 0;
     }
 
     private void sendProgressNotification() {
@@ -151,7 +151,7 @@ public class MainActivity extends Activity {
     private void sendNotification(int minute) {
 
         // mId allows you to update the notification later on.
-//        int mNotificationId = 1;
+        int mNotificationId = 1;
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -271,7 +271,7 @@ public class MainActivity extends Activity {
                         getString(R.string.save), piSave)
 
                         //to group similar messages together
-                .setGroup(GROUP_KEY_EMAILS)
+//                .setGroup(GROUP_KEY_EMAILS)
 //                .extend(new NotificationCompat.WearableExtender().addAction(newAction))
                 // You can add a large icon like this, but it looks bad on the watch, pixelated
 //                .setLargeIcon(BitmapFactory.decodeResource(
@@ -306,35 +306,38 @@ public class MainActivity extends Activity {
         // Set sound, lights, and vibrate to default
         notification.defaults = Notification.DEFAULT_ALL;
 
+        // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
+        mNotificationManager.notify(mNotificationId, notification);
 
 
 
-        if (mNotificationId > 0) {
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.ic_notification_icon);
 
-            mNotificationManager.cancel(mNotificationId - 1);
-
-// Create an InboxStyle notification
-            Notification summaryNotification = new NotificationCompat.Builder(this)
-                    .setContentTitle(mNotificationId + 1 + " new messages")
-                    .setSmallIcon(R.drawable.ic_notification_icon)
-                    .setLargeIcon(largeIcon)
-                    .setStyle(new NotificationCompat.InboxStyle()
-                            .addLine("Alex Faaborg   Check this out")
-                            .addLine("Jeff Chang   Launch Party")
-                            .setBigContentTitle(mNotificationId + 1 + " new messages")
-                            .setSummaryText("johndoe@gmail.com"))
-                    .setGroup(GROUP_KEY_EMAILS)
-                    .setGroupSummary(true)
-                    .build();
-
-            mNotificationManager.notify(-1, summaryNotification);
-        } else {
-            // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
-            mNotificationManager.notify(mNotificationId, notification);
-        }
-        mNotificationId++;
+//        if (mNotificationId > 0) {
+//            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+//                    R.drawable.ic_notification_icon);
+//
+//            mNotificationManager.cancel(mNotificationId - 1);
+//
+//// Create an InboxStyle notification
+//            Notification summaryNotification = new NotificationCompat.Builder(this)
+//                    .setContentTitle(mNotificationId + 1 + " new messages")
+//                    .setSmallIcon(R.drawable.ic_notification_icon)
+//                    .setLargeIcon(largeIcon)
+//                    .setStyle(new NotificationCompat.InboxStyle()
+//                            .addLine("Alex Faaborg   Check this out")
+//                            .addLine("Jeff Chang   Launch Party")
+//                            .setBigContentTitle(mNotificationId + 1 + " new messages")
+//                            .setSummaryText("johndoe@gmail.com"))
+//                    .setGroup(GROUP_KEY_EMAILS)
+//                    .setGroupSummary(true)
+//                    .build();
+//
+//            mNotificationManager.notify(-1, summaryNotification);
+//        } else {
+//            // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
+//            mNotificationManager.notify(mNotificationId, notification);
+//        }
+//        mNotificationId++;
 
 
     }
