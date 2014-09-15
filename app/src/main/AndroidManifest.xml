@@ -29,6 +29,15 @@
             android:name=".PingService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".ReplyActivity"
+            android:label="@string/title_activity_reply"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.clemw.notify.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

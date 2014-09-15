@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,9 @@ import java.util.Calendar;
 public class MainActivity extends Activity {
 
     private Button button;
+
+    // Key for the string that's delivered in the action's intent
+    private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +188,36 @@ public class MainActivity extends Activity {
 //        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_been,
 //                getString(R.string.been), piBeen);
 
+        /*
+         * Adding voice replies
+         */
+
+        String replyLabel = getResources().getString(R.string.reply_label);
+        String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+                .setLabel(replyLabel)
+                .setChoices(replyChoices)
+                .build();
+
+        // Create an intent for the reply action
+        Intent replyIntent = new Intent(this, ReplyActivity.class);
+        PendingIntent replyPendingIntent =
+                PendingIntent.getActivity(this, 0, replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Create the reply action and add the remote input
+        NotificationCompat.Action action =
+                new NotificationCompat.Action(R.drawable.ic_action_reply,
+                        getString(R.string.reply_label), replyPendingIntent);
+
+        NotificationCompat.Action.Builder actionBuilder =
+                new NotificationCompat.Action.Builder(action);
+
+        actionBuilder.addRemoteInput(remoteInput);
+        NotificationCompat.Action newAction = actionBuilder.build();
+
+
         //Wearable extender
         // http://developer.android.com/training/wearables/notifications/creating.html#AddWearableFeatures
         //More things to set can be found here: http://developer.android.com/reference/android/support/v4/app/NotificationCompat.WearableExtender.html
@@ -193,7 +227,8 @@ public class MainActivity extends Activity {
                 .setHintHideIcon(true)
                         //Slightly more pretty than just using big picture style, doesn't resize
                 .setBackground(BitmapFactory.decodeResource(
-                        getResources(), R.drawable.lou));
+                        getResources(), R.drawable.lou))
+                .addAction(newAction);
 
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
@@ -206,10 +241,11 @@ public class MainActivity extends Activity {
                         //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
                 .setPriority(2)
                         // Sets the like action on the notification
-                .addAction (R.drawable.ic_been,
+                .addAction(R.drawable.ic_been,
                         getString(R.string.been), piBeen)
-                .addAction (R.drawable.ic_save,
+                .addAction(R.drawable.ic_save,
                         getString(R.string.save), piSave)
+//                .extend(new NotificationCompat.WearableExtender().addAction(newAction))
                 // You can add a large icon like this, but it looks bad on the watch, pixelated
 //                .setLargeIcon(BitmapFactory.decodeResource(
 //                        getResources(), R.drawable.ic_launcher))
