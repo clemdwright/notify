@@ -180,8 +180,20 @@ public class MainActivity extends Activity {
         saveIntent.setAction("ACTION_SAVE");
         PendingIntent piSave = PendingIntent.getService(this, 0, saveIntent, 0);
 
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_been,
-                getString(R.string.been), piBeen);
+        //Used this when playing with wearable extender
+//        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_been,
+//                getString(R.string.been), piBeen);
+
+        //Wearable extender
+        // http://developer.android.com/training/wearables/notifications/creating.html#AddWearableFeatures
+        //More things to set can be found here: http://developer.android.com/reference/android/support/v4/app/NotificationCompat.WearableExtender.html
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender()
+                        //Removes the app icond from the card, not sure why this is good
+                .setHintHideIcon(true)
+                        //Slightly more pretty than just using big picture style, doesn't resize
+                .setBackground(BitmapFactory.decodeResource(
+                        getResources(), R.drawable.lou));
 
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
@@ -194,12 +206,17 @@ public class MainActivity extends Activity {
                         //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
                 .setPriority(2)
                         // Sets the like action on the notification
-//                .addAction (R.drawable.ic_been,
-//                        getString(R.string.been), piBeen)
+                .addAction (R.drawable.ic_been,
+                        getString(R.string.been), piBeen)
                 .addAction (R.drawable.ic_save,
                         getString(R.string.save), piSave)
+                // You can add a large icon like this, but it looks bad on the watch, pixelated
+//                .setLargeIcon(BitmapFactory.decodeResource(
+//                        getResources(), R.drawable.ic_launcher))
                         //Removes notification when it is opened on phone
-                .extend(new NotificationCompat.WearableExtender().addAction(action))
+//                .extend(new NotificationCompat.WearableExtender().addAction(action))
+                //Necessary for extending the builder with the extender made above
+                .extend(wearableExtender)
                 .setAutoCancel(true);
 
         // Moves the big view style object into the notification
