@@ -3,17 +3,23 @@ package com.example.clemw.notify;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.RemoteInput;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 
 public class ReplyActivity extends Activity {
+
+    private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reply);
+        textView = (TextView) findViewById(R.id.reply);
+
     }
 
     // Clem added
@@ -23,10 +29,16 @@ public class ReplyActivity extends Activity {
 
         Intent intent = getIntent();
         if (intent != null) {
-
-//            String action = intent.getExtras().getString("action");
-            Log.d("ReplyActivity", intent.toString());
+            textView.setText(getMessageText(intent));
         }
+    }
+
+    private CharSequence getMessageText(Intent intent) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return remoteInput.getCharSequence(EXTRA_VOICE_REPLY);
+        }
+        return null;
     }
 
 
