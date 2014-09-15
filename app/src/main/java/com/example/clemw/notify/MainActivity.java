@@ -24,9 +24,13 @@ import java.util.Calendar;
 public class MainActivity extends Activity {
 
     private Button button;
+    private int mNotificationId;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+
+    // For grouping notifications in a stack
+    final static String GROUP_KEY_EMAILS = "group_key_emails";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ public class MainActivity extends Activity {
 //                sendProgressNotification();
             }
         });
+        mNotificationId = 0;
     }
 
     private void sendProgressNotification() {
@@ -146,7 +151,7 @@ public class MainActivity extends Activity {
     private void sendNotification(int minute) {
 
         // mId allows you to update the notification later on.
-        int mNotificationId = 1;
+//        int mNotificationId = 1;
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
@@ -248,6 +253,7 @@ public class MainActivity extends Activity {
                         getResources(), R.drawable.lou))
                 .addAction(newAction);
 
+
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 //Sets the small icon
@@ -263,6 +269,9 @@ public class MainActivity extends Activity {
                         getString(R.string.been), piBeen)
                 .addAction(R.drawable.ic_save,
                         getString(R.string.save), piSave)
+
+                        //to group similar messages together
+                .setGroup(GROUP_KEY_EMAILS)
 //                .extend(new NotificationCompat.WearableExtender().addAction(newAction))
                 // You can add a large icon like this, but it looks bad on the watch, pixelated
 //                .setLargeIcon(BitmapFactory.decodeResource(
@@ -294,6 +303,7 @@ public class MainActivity extends Activity {
 
         // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
         mNotificationManager.notify(mNotificationId, notification);
+        mNotificationId++;
 
 
     }
