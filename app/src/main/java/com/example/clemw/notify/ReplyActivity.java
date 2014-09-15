@@ -1,6 +1,8 @@
 package com.example.clemw.notify;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.RemoteInput;
@@ -30,6 +32,11 @@ public class ReplyActivity extends Activity {
         Intent intent = getIntent();
         if (intent != null) {
             textView.setText(getMessageText(intent));
+
+            //This is not the right way to do this––should pass notification id and delete specific notification
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancelAll();
         }
     }
 
