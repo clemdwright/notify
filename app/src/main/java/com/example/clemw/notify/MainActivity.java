@@ -180,6 +180,9 @@ public class MainActivity extends Activity {
         saveIntent.setAction("ACTION_SAVE");
         PendingIntent piSave = PendingIntent.getService(this, 0, saveIntent, 0);
 
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_been,
+                getString(R.string.been), piBeen);
+
         // You specify the UI information and actions for a notification in a NotificationCompat.Builder object.
         android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 //Sets the small icon
@@ -191,11 +194,12 @@ public class MainActivity extends Activity {
                         //Set the priority to the max, making it more likely notification will be at top and will be expanded by default
                 .setPriority(2)
                         // Sets the like action on the notification
-                .addAction (R.drawable.ic_been,
-                        getString(R.string.been), piBeen)
+//                .addAction (R.drawable.ic_been,
+//                        getString(R.string.been), piBeen)
                 .addAction (R.drawable.ic_save,
                         getString(R.string.save), piSave)
                         //Removes notification when it is opened on phone
+                .extend(new NotificationCompat.WearableExtender().addAction(action))
                 .setAutoCancel(true);
 
         // Moves the big view style object into the notification

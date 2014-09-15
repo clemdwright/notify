@@ -39,11 +39,10 @@ public class PingService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
+    public static void startActionBeen(Context context, int param1) {
         Intent intent = new Intent(context, PingService.class);
         intent.setAction(ACTION_BEEN);
         intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
 
