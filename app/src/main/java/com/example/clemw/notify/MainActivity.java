@@ -282,6 +282,11 @@ public class MainActivity extends Activity {
                 .extend(wearableExtender)
                 .setAutoCancel(true);
 
+
+
+
+
+
         // Moves the big view style object into the notification
 //        mBuilder.setStyle(createBigTextStyle());
 //        mBuilder.setStyle(createInboxStyle());
@@ -301,8 +306,34 @@ public class MainActivity extends Activity {
         // Set sound, lights, and vibrate to default
         notification.defaults = Notification.DEFAULT_ALL;
 
-        // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
-        mNotificationManager.notify(mNotificationId, notification);
+
+
+
+        if (mNotificationId > 0) {
+            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.ic_notification_icon);
+
+            mNotificationManager.cancel(mNotificationId - 1);
+
+// Create an InboxStyle notification
+            Notification summaryNotification = new NotificationCompat.Builder(this)
+                    .setContentTitle(mNotificationId + 1 + " new messages")
+                    .setSmallIcon(R.drawable.ic_notification_icon)
+                    .setLargeIcon(largeIcon)
+                    .setStyle(new NotificationCompat.InboxStyle()
+                            .addLine("Alex Faaborg   Check this out")
+                            .addLine("Jeff Chang   Launch Party")
+                            .setBigContentTitle(mNotificationId + 1 + " new messages")
+                            .setSummaryText("johndoe@gmail.com"))
+                    .setGroup(GROUP_KEY_EMAILS)
+                    .setGroupSummary(true)
+                    .build();
+
+            mNotificationManager.notify(-1, summaryNotification);
+        } else {
+            // To issue the notification, you pass the Notification object to the system by calling NotificationManager.notify()
+            mNotificationManager.notify(mNotificationId, notification);
+        }
         mNotificationId++;
 
 
