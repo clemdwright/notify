@@ -217,6 +217,22 @@ public class MainActivity extends Activity {
         actionBuilder.addRemoteInput(remoteInput);
         NotificationCompat.Action newAction = actionBuilder.build();
 
+        /*
+         * Adding second page
+         */
+
+        // Create a big text style for the second page
+        NotificationCompat.BigTextStyle secondPageStyle = new NotificationCompat.BigTextStyle();
+        secondPageStyle
+                .setBigContentTitle("Page 2")
+                .bigText("A lot of text...");
+
+        // Create second page notification
+        Notification secondPageNotification =
+                new NotificationCompat.Builder(this)
+                        .setStyle(secondPageStyle)
+                        .build();
+
 
         //Wearable extender
         // http://developer.android.com/training/wearables/notifications/creating.html#AddWearableFeatures
@@ -225,6 +241,8 @@ public class MainActivity extends Activity {
                 new NotificationCompat.WearableExtender()
                         //Removes the app icond from the card, not sure why this is good
                 .setHintHideIcon(true)
+                        //Add a second page
+                .addPage(secondPageNotification)
                         //Slightly more pretty than just using big picture style, doesn't resize
                 .setBackground(BitmapFactory.decodeResource(
                         getResources(), R.drawable.lou))
