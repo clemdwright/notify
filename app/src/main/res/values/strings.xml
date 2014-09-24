@@ -2,21 +2,10 @@
 <resources>
 
     <string name="app_name">Notify</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_result">ResultActivity</string>
     <string name="result_text">This is the result activity.</string>
-    <string name="like">Like</string>
-    <string name="save">Save</string>
-    <string name="been">Been</string>
-    <string name="reply_label">Reply</string>
-
-    <string-array name="reply_choices">
-        <item>Yes</item>
-        <item>No</item>
-        <item>Maybe</item>
-    </string-array>
-
-    <string name="title_activity_reply">ReplyActivity</string>
+    <string name="button_text">Send notification</string>
+    <string name="content_text">Jeff Goldblum tagged you in a photo.</string>
+    <string name="content_title">Photobros</string>
 
 </resources>

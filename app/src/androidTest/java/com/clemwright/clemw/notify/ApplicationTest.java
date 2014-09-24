@@ -1,4 +1,4 @@
-package com.example.clemw.notify;
+package com.clemwright.clemw.notify;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,25 +1,35 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'NotifyAndroidKey'
+            keyPassword 'Letmein8184'
+            storeFile file('/Users/clemw/keystores/android.jks')
+            storePassword 'Letmein8184'
+        }
+    }
     compileSdkVersion 20
-    buildToolsVersion "20.0.0"
-
+    buildToolsVersion '20.0.0'
     defaultConfig {
-        applicationId "com.example.clemw.notify"
+        applicationId 'com.clemwright.clemw.notify'
         minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
+    }
+    productFlavors {
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:support-v4:20.0.+"
+    compile 'com.android.support:support-v4:20.0.+'
 }
