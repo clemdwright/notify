@@ -6,21 +6,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.RadioGroup;
 
 
 public class MainActivity extends Activity {
 
     private Button button;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private CheckBox checkBox;
+    private RadioGroup radioGroup;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +32,58 @@ public class MainActivity extends Activity {
                 sendNotification();
             }
         });
-        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        radioGroup = (RadioGroup) findViewById(R.id.bigStyle);
 
-//        sharedPreferences = getPreferences(MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean("Picture", checkBox.isChecked());
     }
 
 
+    private NotificationCompat.BigPictureStyle createBigPictureStyle() {
+        NotificationCompat.BigPictureStyle bigPictureStyle =
+                new NotificationCompat.BigPictureStyle();
+        // Create bitmap from resource
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
+        // Add the bitmap to the big picture style
+        bigPictureStyle.bigPicture(bitmap);
+        // Sets a summary for the big picture view
+        bigPictureStyle.setSummaryText(getString(R.string.content_text));
+        return bigPictureStyle;
+    }
+
+    private NotificationCompat.BigTextStyle createBigTextStyle() {
+        NotificationCompat.BigTextStyle bigTextStyle =
+                new NotificationCompat.BigTextStyle();
+        // Sets a long string for the text
+        bigTextStyle.bigText(getString(R.string.long_text));
+
+        return bigTextStyle;
+    }
+
+    private NotificationCompat.InboxStyle createInboxStyle() {
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        String[] events = new String[6];
+
+        events[0] = "Jeff Goldblum";
+        events[1] = "Chaka Khan";
+        events[2] = "Nicki Minaj";
+        events[3] = "Weird Al";
+        events[4] = "Nessie";
+        events[5] = "Joe Biden";
+
+        // Sets summary text for the Inbox style big view.
+        inboxStyle.setSummaryText("6 friends tagged you in photos.");
+
+        // Moves events into the big view
+        for (int i = 0; i < events.length; i++) {
+            inboxStyle.addLine(events[i]);
+        }
+
+        // Note: you need to drag to expand this info on phone;
+        // On watch, it comes already expanded
+        return inboxStyle;
+    }
 
 
-
-//    @Override
-//    public SharedPreferences getPreferences(int mode) {
-//        return super.getPreferences(mode);
-//    }
-/*
-    getPreferences(MODE_PRIVATE)
-     */
 
     /*
      * Sends a notification.
@@ -96,6 +130,21 @@ public class MainActivity extends Activity {
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int selectedBigStyle = radioGroup.getCheckedRadioButtonId();
+
+        switch (selectedBigStyle) {
+            case R.id.bigPictureStyle: mBuilder.setStyle(createBigPictureStyle());
+                break;
+            case R.id.bigTextStyle: mBuilder.setStyle(createBigTextStyle());
+                break;
+            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle());
+            default:
+                break;
+        }
+
+//        if (bigPictureStyle.isChecked()) mBuilder.setStyle(createBigPictureStyle());
+//        if (bigTextStyle.isChecked()) mBuilder.setStyle(createBigTextStyle());
 
         /*
          * To create the notification itself, you call NotificationCompat.Builder.build(),
