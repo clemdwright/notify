@@ -6,16 +6,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 
 public class MainActivity extends Activity {
 
     private Button button;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,24 @@ public class MainActivity extends Activity {
                 sendNotification();
             }
         });
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+
+//        sharedPreferences = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putBoolean("Picture", checkBox.isChecked());
     }
+
+
+
+
+
+//    @Override
+//    public SharedPreferences getPreferences(int mode) {
+//        return super.getPreferences(mode);
+//    }
+/*
+    getPreferences(MODE_PRIVATE)
+     */
 
     /*
      * Sends a notification.
