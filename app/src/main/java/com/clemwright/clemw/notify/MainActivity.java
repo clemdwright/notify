@@ -12,14 +12,23 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.ToggleButton;
 
 
 public class MainActivity extends Activity {
 
     private Button button;
     private RadioGroup radioGroup;
+    private Spinner spinner;
+    private Switch lights;
+    private Switch vibrate;
+//    private Switch sound;
+    private ToggleButton sound;
 
 
     @Override
@@ -32,7 +41,19 @@ public class MainActivity extends Activity {
                 sendNotification();
             }
         });
+
         radioGroup = (RadioGroup) findViewById(R.id.bigStyle);
+
+        spinner = (Spinner) findViewById(R.id.priority);
+        Integer[] priorities = new Integer[] {-2,-1,0,1,2};
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, priorities);
+        spinner.setAdapter(adapter);
+        int spinnerPosition = adapter.getPosition(0);
+        spinner.setSelection(spinnerPosition);
+
+        lights = (Switch) findViewById(R.id.lights);
+        vibrate = (Switch) findViewById(R.id.vibrate);
+        sound = (ToggleButton) findViewById(R.id.sound);
 
     }
 
@@ -58,7 +79,7 @@ public class MainActivity extends Activity {
         return bigTextStyle;
     }
 
-    private NotificationCompat.InboxStyle createInboxStyle() {
+    private NotificationCompat.InboxStyle createInboxStyle(NotificationCompat.Builder builder) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
         String[] events = new String[6];
@@ -72,6 +93,8 @@ public class MainActivity extends Activity {
 
         // Sets summary text for the Inbox style big view.
         inboxStyle.setSummaryText("6 friends tagged you in photos.");
+
+        builder.setContentText("6 friends tagged you in photos.");
 
         // Moves events into the big view
         for (int i = 0; i < events.length; i++) {
@@ -124,7 +147,7 @@ public class MainActivity extends Activity {
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
-                .setPriority(2)
+                .setPriority((Integer) spinner.getSelectedItem())
                 .setAutoCancel(true);
 
         mBuilder.setContentIntent(resultPendingIntent);
@@ -138,13 +161,10 @@ public class MainActivity extends Activity {
                 break;
             case R.id.bigTextStyle: mBuilder.setStyle(createBigTextStyle());
                 break;
-            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle());
+            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle(mBuilder));
             default:
                 break;
         }
-
-//        if (bigPictureStyle.isChecked()) mBuilder.setStyle(createBigPictureStyle());
-//        if (bigTextStyle.isChecked()) mBuilder.setStyle(createBigTextStyle());
 
         /*
          * To create the notification itself, you call NotificationCompat.Builder.build(),
@@ -152,8 +172,9 @@ public class MainActivity extends Activity {
          */
         Notification mNotification = mBuilder.build();
 
-        // Set sound, lights, and vibrate to default
-        mNotification.defaults = Notification.DEFAULT_ALL;
+        if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
+        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
+        if (vibrate.isChecked()) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 
         /*
          * To issue the notification, you pass the Notification object to the system by
