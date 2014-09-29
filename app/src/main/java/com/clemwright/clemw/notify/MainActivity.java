@@ -14,46 +14,47 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.ToggleButton;
 
 
 public class MainActivity extends Activity {
 
-    private Button button;
-    private RadioGroup radioGroup;
-    private Spinner spinner;
-    private Switch lights;
-    private Switch vibrate;
-//    private Switch sound;
-    private ToggleButton sound;
+    private Button send;
+    private RadioGroup style;
+    private Spinner priority;
+    private CheckBox lights;
+    private CheckBox vibrate;
+    private CheckBox sound;
+    private CheckBox autocancel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new Button.OnClickListener() {
+        send = (Button) findViewById(R.id.button);
+        send.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 sendNotification();
             }
         });
 
-        radioGroup = (RadioGroup) findViewById(R.id.bigStyle);
+        style = (RadioGroup) findViewById(R.id.bigStyle);
 
-        spinner = (Spinner) findViewById(R.id.priority);
+        priority = (Spinner) findViewById(R.id.priority);
         Integer[] priorities = new Integer[] {-2,-1,0,1,2};
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, priorities);
-        spinner.setAdapter(adapter);
-        int spinnerPosition = adapter.getPosition(0);
-        spinner.setSelection(spinnerPosition);
 
-        lights = (Switch) findViewById(R.id.lights);
-        vibrate = (Switch) findViewById(R.id.vibrate);
-        sound = (ToggleButton) findViewById(R.id.sound);
+        priority.setAdapter(adapter);
+        int spinnerPosition = adapter.getPosition(0);
+        priority.setSelection(spinnerPosition);
+
+        lights = (CheckBox) findViewById(R.id.lights);
+        vibrate = (CheckBox) findViewById(R.id.vibrate);
+        sound = (CheckBox) findViewById(R.id.sound);
+        autocancel = (CheckBox) findViewById(R.id.autocancel);
 
     }
 
@@ -147,14 +148,14 @@ public class MainActivity extends Activity {
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
-                .setPriority((Integer) spinner.getSelectedItem())
-                .setAutoCancel(true);
+                .setPriority((Integer) priority.getSelectedItem())
+                .setAutoCancel(autocancel.isChecked());
 
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int selectedBigStyle = radioGroup.getCheckedRadioButtonId();
+        int selectedBigStyle = style.getCheckedRadioButtonId();
 
         switch (selectedBigStyle) {
             case R.id.bigPictureStyle: mBuilder.setStyle(createBigPictureStyle());
