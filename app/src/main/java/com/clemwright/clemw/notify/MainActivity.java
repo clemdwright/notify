@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +18,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-
 
 public class MainActivity extends Activity {
 
@@ -28,6 +28,9 @@ public class MainActivity extends Activity {
     private CheckBox vibrate;
     private CheckBox sound;
     private CheckBox autocancel;
+
+    // Key for the string that's delivered in the action's intent
+    private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
 
 
     @Override
@@ -108,6 +111,44 @@ public class MainActivity extends Activity {
     }
 
 
+//    private NotificationCompat.WearableExtender wearableExtender =
+//            new NotificationCompat.WearableExtender()
+//                    .addAction(newAction);
+
+
+
+
+
+    private  NotificationCompat.Action createVoiceReplyAction() {
+
+        String replyLabel = getResources().getString(R.string.reply_label);
+        String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+                .setLabel(replyLabel)
+                .setChoices(replyChoices)
+                .build();
+
+        // Create an intent for the reply action
+        Intent replyIntent = new Intent(this, ReplyActivity.class);
+        PendingIntent replyPendingIntent =
+                PendingIntent.getActivity(this, 0, replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Create the reply action and add the remote input
+        NotificationCompat.Action action =
+                new NotificationCompat.Action(R.drawable.ic_action_chat,
+                        getString(R.string.reply_label), replyPendingIntent);
+
+        NotificationCompat.Action.Builder actionBuilder =
+                new NotificationCompat.Action.Builder(action);
+
+        actionBuilder.addRemoteInput(remoteInput);
+        NotificationCompat.Action newAction = actionBuilder.build();
+
+        return newAction;
+
+    }
 
     /*
      * Sends a notification.
@@ -149,6 +190,10 @@ public class MainActivity extends Activity {
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
                 .setPriority((Integer) priority.getSelectedItem())
+
+                //Adding actions for testing
+                .addAction(R.drawable.ic_notification_icon, "Like", resultPendingIntent)
+                .addAction(createVoiceReplyAction())
                 .setAutoCancel(autocancel.isChecked());
 
         mBuilder.setContentIntent(resultPendingIntent);

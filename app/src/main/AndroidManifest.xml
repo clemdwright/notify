@@ -24,6 +24,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.clemw.notify.MainActivity" />
         </activity>
+        <activity
+            android:name=".ReplyActivity"
+            android:label="@string/title_activity_reply" >
+        </activity>
     </application>
 
 </manifest>

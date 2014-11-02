@@ -15,5 +15,14 @@
     <string name="vibrate">Vibrate</string>
     <string name="sound">Sound</string>
     <string name="long_text">"This is a very long string that has lots to say about the world and all of the lovely things in it and all the things we will do one day when we have the time and the money and the freedom and the desire."</string>
+    <string name="title_activity_reply">ReplyActivity</string>
+    <string name="reply_text">This is the default reply text.</string>
+    <string name="reply_label">Comment</string>
+
+    <string-array name="reply_choices">
+        <item>Yesss</item>
+        <item>Love it</item>
+        <item>Omg I miss you</item>
+    </string-array>
 
 </resources>
