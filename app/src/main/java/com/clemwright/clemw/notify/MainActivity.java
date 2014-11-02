@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
                 .build();
 
         // Create an intent for the reply action
-        Intent replyIntent = new Intent(this, ReplyActivity.class);
+        Intent replyIntent = new Intent(this, ResultActivity.class);
         PendingIntent replyPendingIntent =
                 PendingIntent.getActivity(this, 0, replyIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
