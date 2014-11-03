@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     private CheckBox vibrate;
     private CheckBox sound;
     private CheckBox autocancel;
+    private CheckBox remoteInput;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -58,6 +59,7 @@ public class MainActivity extends Activity {
         vibrate = (CheckBox) findViewById(R.id.vibrate);
         sound = (CheckBox) findViewById(R.id.sound);
         autocancel = (CheckBox) findViewById(R.id.autocancel);
+        remoteInput = (CheckBox) findViewById(R.id.remoteInput);
 
     }
 
@@ -111,12 +113,8 @@ public class MainActivity extends Activity {
     }
 
 
-//    private NotificationCompat.WearableExtender wearableExtender =
-//            new NotificationCompat.WearableExtender()
-//                    .addAction(newAction);
-
-
-
+    private NotificationCompat.WearableExtender wearableExtender =
+            new NotificationCompat.WearableExtender();
 
 
     private  NotificationCompat.Action createVoiceReplyAction() {
@@ -180,6 +178,11 @@ public class MainActivity extends Activity {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        // If selected, adds the voice reply action to the wearable extender
+        if (remoteInput.isChecked()) {
+            wearableExtender.addAction(createVoiceReplyAction());
+        }
+
         /*
          * You specify the UI information and actions for a notification in a
          * NotificationCompat.Builder object.
@@ -193,8 +196,9 @@ public class MainActivity extends Activity {
 
                 //Adding actions for testing
                 .addAction(R.drawable.ic_notification_icon, "Like", resultPendingIntent)
-                .addAction(createVoiceReplyAction())
-                .setAutoCancel(autocancel.isChecked());
+//                .addAction(createVoiceReplyAction())
+                .setAutoCancel(autocancel.isChecked())
+                .extend(wearableExtender);
 
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
