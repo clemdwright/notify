@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
     private CheckBox sound;
     private CheckBox autocancel;
     private CheckBox remoteInput;
+    private CheckBox wearableLike;
+    private CheckBox bridgedLike;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -60,6 +62,8 @@ public class MainActivity extends Activity {
         sound = (CheckBox) findViewById(R.id.sound);
         autocancel = (CheckBox) findViewById(R.id.autocancel);
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
+        wearableLike = (CheckBox) findViewById(R.id.wearableLike);
+        bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
 
     }
 
@@ -111,11 +115,6 @@ public class MainActivity extends Activity {
         // On watch, it comes already expanded
         return inboxStyle;
     }
-
-
-    private NotificationCompat.WearableExtender wearableExtender =
-            new NotificationCompat.WearableExtender();
-
 
     private  NotificationCompat.Action createVoiceReplyAction() {
 
@@ -178,10 +177,13 @@ public class MainActivity extends Activity {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-        // If selected, adds the voice reply action to the wearable extender
-        if (remoteInput.isChecked()) {
-            wearableExtender.addAction(createVoiceReplyAction());
-        }
+
+        //Creates a like action that can be added to either wearable extender or normal notification
+        NotificationCompat.Action likeAction =
+                new NotificationCompat.Action(R.drawable.ic_notification_icon,
+                        getString(R.string.like_label), resultPendingIntent);
+
+
 
         /*
          * You specify the UI information and actions for a notification in a
@@ -193,12 +195,28 @@ public class MainActivity extends Activity {
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
                 .setPriority((Integer) priority.getSelectedItem())
+                .setAutoCancel(autocancel.isChecked());
 
-                //Adding actions for testing
-                .addAction(R.drawable.ic_notification_icon, "Like", resultPendingIntent)
-//                .addAction(createVoiceReplyAction())
-                .setAutoCancel(autocancel.isChecked())
-                .extend(wearableExtender);
+        if (bridgedLike.isChecked()) {
+            mBuilder.addAction(likeAction);
+        }
+
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender();
+
+        // If selected, adds the like action to the wearable extender
+        if (wearableLike.isChecked()) {
+            wearableExtender.addAction(likeAction);
+        }
+
+        // If selected, adds the voice reply action to the wearable extender
+        if (remoteInput.isChecked()) {
+            wearableExtender.addAction(createVoiceReplyAction());
+        }
+
+        if (wearableLike.isChecked() || remoteInput.isChecked()) {
+            mBuilder.extend(wearableExtender);
+        }
 
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
