@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
     private CheckBox remoteInput;
     private CheckBox wearableLike;
     private CheckBox bridgedLike;
+    private CheckBox bigPictureStyle;
+    private CheckBox backgroundImage;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -64,6 +66,8 @@ public class MainActivity extends Activity {
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
         wearableLike = (CheckBox) findViewById(R.id.wearableLike);
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
+        bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
+        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
 
     }
 
@@ -128,6 +132,9 @@ public class MainActivity extends Activity {
 
         // Create an intent for the reply action
         Intent replyIntent = new Intent(this, ResultActivity.class);
+
+        replyIntent.putExtra("IntentType", "Commented");
+
         PendingIntent replyPendingIntent =
                 PendingIntent.getActivity(this, 0, replyIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
@@ -159,6 +166,8 @@ public class MainActivity extends Activity {
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
 
+        resultIntent.putExtra("IntentType", "Opened Activity");
+
         /*
          * The stack builder object will contain an artificial back stack for the
          * started Activity. This ensures that navigating backward from the Activity
@@ -178,11 +187,19 @@ public class MainActivity extends Activity {
                 );
 
 
+        // Create an intent for the reply action
+        Intent likeIntent = new Intent(this, ResultActivity.class);
+
+        likeIntent.putExtra("IntentType", "Liked");
+
+        PendingIntent likePendingIntent =
+                PendingIntent.getActivity(this, 0, likeIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
         //Creates a like action that can be added to either wearable extender or normal notification
         NotificationCompat.Action likeAction =
                 new NotificationCompat.Action(R.drawable.ic_notification_icon,
-                        getString(R.string.like_label), resultPendingIntent);
-
+                        getString(R.string.like_label), likePendingIntent);
 
 
         /*
@@ -201,6 +218,10 @@ public class MainActivity extends Activity {
             mBuilder.addAction(likeAction);
         }
 
+        if (bigPictureStyle.isChecked()) {
+            mBuilder.setStyle(createBigPictureStyle());
+        }
+
         NotificationCompat.WearableExtender wearableExtender =
                 new NotificationCompat.WearableExtender();
 
@@ -209,30 +230,39 @@ public class MainActivity extends Activity {
             wearableExtender.addAction(likeAction);
         }
 
+        // If selected, set background image
+        if (backgroundImage.isChecked()) {
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
+            wearableExtender.setBackground(bitmap);
+        }
+
         // If selected, adds the voice reply action to the wearable extender
         if (remoteInput.isChecked()) {
             wearableExtender.addAction(createVoiceReplyAction());
         }
 
-        if (wearableLike.isChecked() || remoteInput.isChecked()) {
-            mBuilder.extend(wearableExtender);
-        }
+//        if (wearableLike.isChecked() || remoteInput.isChecked()) {
+//            mBuilder.extend(wearableExtender);
+//        }
+
+        mBuilder.extend(wearableExtender);
+
 
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int selectedBigStyle = style.getCheckedRadioButtonId();
-
-        switch (selectedBigStyle) {
-            case R.id.bigPictureStyle: mBuilder.setStyle(createBigPictureStyle());
-                break;
-            case R.id.bigTextStyle: mBuilder.setStyle(createBigTextStyle());
-                break;
-            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle(mBuilder));
-            default:
-                break;
-        }
+//        int selectedBigStyle = style.getCheckedRadioButtonId();
+//
+//        switch (selectedBigStyle) {
+//            case R.id.bigPictureStyle: mBuilder.setStyle(createBigPictureStyle());
+//                break;
+//            case R.id.bigTextStyle: mBuilder.setStyle(createBigTextStyle());
+//                break;
+//            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle(mBuilder));
+//            default:
+//                break;
+//        }
 
         /*
          * To create the notification itself, you call NotificationCompat.Builder.build(),

@@ -29,9 +29,16 @@
         android:layout_below="@id/bridgedName"
         android:id="@+id/bridgedLike" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/big_picture_style"
+        android:id="@+id/bigPictureStyle"
+        android:layout_below="@id/bridgedLike"/>
 
     <TextView
-        android:layout_below="@id/bridgedLike"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_below="@id/bigPictureStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/wearableName"
@@ -51,13 +58,20 @@
         android:layout_below="@id/remoteInput"
         android:id="@+id/wearableLike" />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BackgroundImage"
+        android:layout_below="@id/wearableLike"
+        android:id="@+id/backgroundImage" />
+
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/defaultsName"
-        android:layout_below="@id/wearableLike"
+        android:layout_below="@id/backgroundImage"
         android:text="DEFAULTS"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
@@ -118,11 +132,11 @@
             android:checked="true"
             android:id="@+id/noBigStyle" />
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/big_picture_style"
-            android:id="@+id/bigPictureStyle" />
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/big_picture_style"-->
+            <!--android:id="@+id/bigPictureStyle" />-->
 
         <RadioButton
             android:layout_width="wrap_content"

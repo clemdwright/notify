@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.RemoteInput;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class ResultActivity extends Activity {
@@ -26,6 +27,12 @@ public class ResultActivity extends Activity {
 
         Intent intent = getIntent();
         if (intent != null) {
+
+            String toastString = intent.getStringExtra("IntentType");
+
+            Toast.makeText(getApplicationContext(), toastString,
+                    Toast.LENGTH_SHORT).show();
+
             textView.setText(getMessageText(intent));
         }
     }
