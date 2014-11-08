@@ -16,23 +16,22 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
 
     private Button send;
-    private RadioGroup style;
+//    private RadioGroup style;
     private Spinner priority;
-    private CheckBox lights;
+//    private CheckBox lights;
     private CheckBox vibrate;
     private CheckBox sound;
-    private CheckBox autocancel;
+//    private CheckBox autocancel;
     private CheckBox remoteInput;
-    private CheckBox wearableLike;
+//    private CheckBox wearableLike;
     private CheckBox bridgedLike;
     private CheckBox bigPictureStyle;
-    private CheckBox backgroundImage;
+//    private CheckBox backgroundImage;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -49,25 +48,25 @@ public class MainActivity extends Activity {
             }
         });
 
-        style = (RadioGroup) findViewById(R.id.bigStyle);
+//        style = (RadioGroup) findViewById(R.id.bigStyle);
 
         priority = (Spinner) findViewById(R.id.priority);
-        Integer[] priorities = new Integer[] {-2,-1,0,1,2};
+        Integer[] priorities = new Integer[] {2,1,0,-1,-2};
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, priorities);
 
         priority.setAdapter(adapter);
         int spinnerPosition = adapter.getPosition(0);
         priority.setSelection(spinnerPosition);
 
-        lights = (CheckBox) findViewById(R.id.lights);
+//        lights = (CheckBox) findViewById(R.id.lights);
         vibrate = (CheckBox) findViewById(R.id.vibrate);
         sound = (CheckBox) findViewById(R.id.sound);
-        autocancel = (CheckBox) findViewById(R.id.autocancel);
+//        autocancel = (CheckBox) findViewById(R.id.autocancel);
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
-        wearableLike = (CheckBox) findViewById(R.id.wearableLike);
+//        wearableLike = (CheckBox) findViewById(R.id.wearableLike);
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
         bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
-        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
+//        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
 
     }
 
@@ -136,7 +135,7 @@ public class MainActivity extends Activity {
         replyIntent.putExtra("IntentType", "Commented");
 
         PendingIntent replyPendingIntent =
-                PendingIntent.getActivity(this, 0, replyIntent,
+                PendingIntent.getActivity(this, 2, replyIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Create the reply action and add the remote input
@@ -193,12 +192,12 @@ public class MainActivity extends Activity {
         likeIntent.putExtra("IntentType", "Liked");
 
         PendingIntent likePendingIntent =
-                PendingIntent.getActivity(this, 0, likeIntent,
+                PendingIntent.getActivity(this, 1, likeIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Creates a like action that can be added to either wearable extender or normal notification
         NotificationCompat.Action likeAction =
-                new NotificationCompat.Action(R.drawable.ic_notification_icon,
+                new NotificationCompat.Action(R.drawable.ic_action_like,
                         getString(R.string.like_label), likePendingIntent);
 
 
@@ -211,8 +210,9 @@ public class MainActivity extends Activity {
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
-                .setPriority((Integer) priority.getSelectedItem())
-                .setAutoCancel(autocancel.isChecked());
+
+//                        .setAutoCancel(autocancel.isChecked())
+                .setPriority((Integer) priority.getSelectedItem());
 
         if (bridgedLike.isChecked()) {
             mBuilder.addAction(likeAction);
@@ -226,14 +226,18 @@ public class MainActivity extends Activity {
                 new NotificationCompat.WearableExtender();
 
         // If selected, adds the like action to the wearable extender
-        if (wearableLike.isChecked()) {
-            wearableExtender.addAction(likeAction);
-        }
+//        if (wearableLike.isChecked()) {
+//            wearableExtender.addAction(likeAction);
+//        }
 
         // If selected, set background image
-        if (backgroundImage.isChecked()) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
-            wearableExtender.setBackground(bitmap);
+//        if (backgroundImage.isChecked()) {
+//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
+//            wearableExtender.setBackground(bitmap);
+//        }
+
+        if (bridgedLike.isChecked() && remoteInput.isChecked()) {
+            wearableExtender.addAction(likeAction);
         }
 
         // If selected, adds the voice reply action to the wearable extender
@@ -241,9 +245,10 @@ public class MainActivity extends Activity {
             wearableExtender.addAction(createVoiceReplyAction());
         }
 
-//        if (wearableLike.isChecked() || remoteInput.isChecked()) {
-//            mBuilder.extend(wearableExtender);
-//        }
+
+        if (remoteInput.isChecked()) {
+            mBuilder.extend(wearableExtender);
+        }
 
         mBuilder.extend(wearableExtender);
 
@@ -271,7 +276,7 @@ public class MainActivity extends Activity {
         Notification mNotification = mBuilder.build();
 
         if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
-        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
+//        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
         if (vibrate.isChecked()) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 
         /*
