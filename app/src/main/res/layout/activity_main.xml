@@ -122,7 +122,6 @@
         android:layout_height="wrap_content"
         android:text="@string/vibrate"
         android:layout_below="@+id/defaultsName"
-        android:checked="true"
         android:id="@+id/vibrate"/>
 
     <TextView

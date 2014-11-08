@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
@@ -33,6 +35,9 @@ public class MainActivity extends Activity {
     private CheckBox bigPictureStyle;
 //    private CheckBox backgroundImage;
     private CheckBox largeIcon;
+    private SharedPreferences sharedPreferences;
+    private boolean vibrateDefault = true;
+    SharedPreferences.Editor editor;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -59,6 +64,9 @@ public class MainActivity extends Activity {
         int spinnerPosition = adapter.getPosition(0);
         priority.setSelection(spinnerPosition);
 
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
 //        lights = (CheckBox) findViewById(R.id.lights);
         vibrate = (CheckBox) findViewById(R.id.vibrate);
 //        sound = (CheckBox) findViewById(R.id.sound);
@@ -70,6 +78,29 @@ public class MainActivity extends Activity {
 //        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
         largeIcon = (CheckBox) findViewById(R.id.largeIcon);
 
+        vibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+                    editor.putBoolean(getString(R.string.vibrate), isChecked);
+                    editor.commit();
+
+//                    Toast.makeText(getApplicationContext(), (String.valueOf(isChecked)),
+//                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        boolean vibrateChecked = sharedPreferences.getBoolean(getString(R.string.vibrate), vibrateDefault);
+
+        vibrate.setChecked(vibrateChecked);
+//        if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
     }
 
 
@@ -131,7 +162,7 @@ public class MainActivity extends Activity {
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
 
-        resultIntent.putExtra("IntentType", "Opened Activity");
+        resultIntent.putExtra("IntentType", "Opened");
 
         /*
          * The stack builder object will contain an artificial back stack for the
@@ -252,7 +283,15 @@ public class MainActivity extends Activity {
 
 //        if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
 //        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
-        if (vibrate.isChecked()) mNotification.defaults = Notification.DEFAULT_VIBRATE;
+
+        //        int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+//        long highScore = sharedPref.getInt(getString(R.string.saved_high_score), defaultValue);
+
+        //TODO: set default value with a variable instead of "false"
+
+        boolean vibrateChecked = sharedPreferences.getBoolean(getString(R.string.vibrate), vibrateDefault);
+
+        if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 
         /*
          * To issue the notification, you pass the Notification object to the system by
