@@ -23,6 +23,7 @@
     <string name="like_action">Like</string>
     <string name="remote_input">Comment</string>
     <string name="priority">PRIORITY</string>
+    <string name="settings_name">Notification settings</string>
 
 
     <string-array name="reply_choices">
