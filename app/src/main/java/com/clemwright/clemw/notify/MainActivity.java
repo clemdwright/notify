@@ -25,13 +25,14 @@ public class MainActivity extends Activity {
     private Spinner priority;
 //    private CheckBox lights;
     private CheckBox vibrate;
-    private CheckBox sound;
+//    private CheckBox sound;
 //    private CheckBox autocancel;
     private CheckBox remoteInput;
 //    private CheckBox wearableLike;
     private CheckBox bridgedLike;
     private CheckBox bigPictureStyle;
 //    private CheckBox backgroundImage;
+    private CheckBox largeIcon;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -60,13 +61,14 @@ public class MainActivity extends Activity {
 
 //        lights = (CheckBox) findViewById(R.id.lights);
         vibrate = (CheckBox) findViewById(R.id.vibrate);
-        sound = (CheckBox) findViewById(R.id.sound);
+//        sound = (CheckBox) findViewById(R.id.sound);
 //        autocancel = (CheckBox) findViewById(R.id.autocancel);
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
 //        wearableLike = (CheckBox) findViewById(R.id.wearableLike);
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
         bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
 //        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
+        largeIcon = (CheckBox) findViewById(R.id.largeIcon);
 
     }
 
@@ -81,42 +83,6 @@ public class MainActivity extends Activity {
         // Sets a summary for the big picture view
         bigPictureStyle.setSummaryText(getString(R.string.content_text));
         return bigPictureStyle;
-    }
-
-    private NotificationCompat.BigTextStyle createBigTextStyle() {
-        NotificationCompat.BigTextStyle bigTextStyle =
-                new NotificationCompat.BigTextStyle();
-        // Sets a long string for the text
-        bigTextStyle.bigText(getString(R.string.long_text));
-
-        return bigTextStyle;
-    }
-
-    private NotificationCompat.InboxStyle createInboxStyle(NotificationCompat.Builder builder) {
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
-        String[] events = new String[6];
-
-        events[0] = "Jeff Goldblum";
-        events[1] = "Chaka Khan";
-        events[2] = "Nicki Minaj";
-        events[3] = "Weird Al";
-        events[4] = "Nessie";
-        events[5] = "Joe Biden";
-
-        // Sets summary text for the Inbox style big view.
-        inboxStyle.setSummaryText("6 friends tagged you in photos.");
-
-        builder.setContentText("6 friends tagged you in photos.");
-
-        // Moves events into the big view
-        for (int i = 0; i < events.length; i++) {
-            inboxStyle.addLine(events[i]);
-        }
-
-        // Note: you need to drag to expand this info on phone;
-        // On watch, it comes already expanded
-        return inboxStyle;
     }
 
     private  NotificationCompat.Action createVoiceReplyAction() {
@@ -212,12 +178,16 @@ public class MainActivity extends Activity {
         android.support.v4.app.NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification_icon)
-                .setLargeIcon(profilePhoto)
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
 
 //                        .setAutoCancel(autocancel.isChecked())
-                .setPriority((Integer) priority.getSelectedItem());
+//                        .setPriority((Integer) priority.getSelectedItem())
+                .setPriority(2);
+
+        if (largeIcon.isChecked()) {
+            mBuilder.setLargeIcon(profilePhoto);
+        }
 
         if (bridgedLike.isChecked()) {
             mBuilder.addAction(likeAction);
@@ -280,7 +250,7 @@ public class MainActivity extends Activity {
          */
         Notification mNotification = mBuilder.build();
 
-        if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
+//        if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
 //        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
         if (vibrate.isChecked()) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 

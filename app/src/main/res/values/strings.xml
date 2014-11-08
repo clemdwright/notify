@@ -7,7 +7,7 @@
     <string name="button_text">Send notification</string>
     <string name="content_text">Nico tagged you in a photo.</string>
     <string name="content_title">Notify</string>
-    <string name="big_picture_style">Picture</string>
+    <string name="big_picture_style">Big picture</string>
     <string name="big_text_style">BigTextStyle</string>
     <string name="no_big_style">Standard</string>
     <string name="inbox_style">InboxStyle</string>
@@ -18,12 +18,18 @@
     <string name="reply_text">This is the default reply text.</string>
     <string name="reply_label">Comment</string>
     <string name="like_label">Like</string>
-    <string name="bridged_name">PHONE AND WATCH</string>
+    <string name="bridged_name">ADDITIONAL</string>
     <string name="wearable_name">WATCH ONLY</string>
-    <string name="like_action">Like</string>
-    <string name="remote_input">Comment</string>
+    <string name="like_action">Like action</string>
+    <string name="remote_input">Comment action (wearable only)</string>
     <string name="priority">PRIORITY</string>
     <string name="settings_name">Notification settings</string>
+    <string name="small_icon">Small icon</string>
+    <string name="large_icon">Large icon</string>
+    <string name="content_title_name">Content title</string>
+    <string name="content_text_name">Content text</string>
+    <string name="required_name">REQUIRED</string>
+    <string name="defaults_name">ALERT</string>
 
 
     <string-array name="reply_choices">
