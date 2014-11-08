@@ -201,6 +201,10 @@ public class MainActivity extends Activity {
                         getString(R.string.like_label), likePendingIntent);
 
 
+        // Create bitmap from resource
+        Bitmap profilePhoto = BitmapFactory.decodeResource(getResources(), R.drawable.nico);
+
+
         /*
          * You specify the UI information and actions for a notification in a
          * NotificationCompat.Builder object.
@@ -208,6 +212,7 @@ public class MainActivity extends Activity {
         android.support.v4.app.NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification_icon)
+                .setLargeIcon(profilePhoto)
                 .setContentTitle(getString(R.string.content_title))
                 .setContentText(getString(R.string.content_text))
 

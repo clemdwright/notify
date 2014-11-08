@@ -5,7 +5,7 @@
     <string name="title_activity_result">Photo</string>
     <string name="result_text">This is the result activity.</string>
     <string name="button_text">Send notification</string>
-    <string name="content_text">Lou Reed tagged you in a photo.</string>
+    <string name="content_text">Nico tagged you in a photo.</string>
     <string name="content_title">Notify</string>
     <string name="big_picture_style">Picture</string>
     <string name="big_text_style">BigTextStyle</string>
@@ -26,9 +26,9 @@
 
 
     <string-array name="reply_choices">
-        <item>Yesss</item>
-        <item>Love it</item>
-        <item>Omg I miss you</item>
+        <item>Hey babe</item>
+        <item>Take a walk on the wild side</item>
+        <item>Alright</item>
     </string-array>
 
 </resources>
