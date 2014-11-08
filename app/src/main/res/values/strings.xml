@@ -20,8 +20,8 @@
     <string name="like_label">Like</string>
     <string name="bridged_name">ADDITIONAL</string>
     <string name="wearable_name">WATCH ONLY</string>
-    <string name="like_action">Like action (on phone and wearable)</string>
-    <string name="remote_input">Comment action (on wearable only)</string>
+    <string name="like_action">Like action</string>
+    <string name="remote_input">Comment action on wearable</string>
     <string name="priority">PRIORITY</string>
     <string name="settings_name">Notification settings</string>
     <string name="small_icon">Small icon (heart image)</string>
