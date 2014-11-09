@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
     private CheckBox vibrateCheckBox;
     private boolean vibrateDefault = true;
     SharedPreferences.Editor editor;
+//    private Map<String, CompoundButton> map;
 
     // Key for the string that's delivered in the action's intent
     private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
@@ -69,6 +70,8 @@ public class MainActivity extends Activity {
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
         bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
         largeIcon = (CheckBox) findViewById(R.id.largeIcon);
+
+
 
         ArrayList<CheckBox> checkBoxes = new ArrayList<CheckBox>();
         checkBoxes.add(remoteInput);
@@ -278,12 +281,7 @@ public class MainActivity extends Activity {
 
         //TODO: set default value with a variable instead of "false"
 
-        int id = vibrateCheckBox.getId();
-        String key = String.valueOf(id);
-
-        Message.message(getApplicationContext(), key);
-
-        boolean vibrateChecked = sharedPreferences.getBoolean(key, vibrateDefault);
+        boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), vibrateDefault);
 
         if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 
@@ -292,5 +290,11 @@ public class MainActivity extends Activity {
          * calling NotificationManager.notify()
          */
         mNotificationManager.notify(mNotificationId, mNotification);
+    }
+
+    private String getKey(CompoundButton buttonView) {
+        int id = buttonView.getId();
+        String key = String.valueOf(id);
+        return key;
     }
 }
