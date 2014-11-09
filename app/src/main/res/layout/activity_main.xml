@@ -50,10 +50,6 @@
         android:id="@+id/bridgedName"
         android:text="@string/bridged_name"/>
 
-
-
-
-
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,22 +82,6 @@
         android:checked="true"
         android:id="@+id/remoteInput" />
 
-    <!--<CheckBox-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="LikeAction"-->
-        <!--android:layout_below="@id/remoteInput"-->
-        <!--android:id="@+id/wearableLike" />-->
-
-    <!--<CheckBox-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="BackgroundImage"-->
-        <!--android:layout_below="@id/wearableLike"-->
-        <!--android:id="@+id/backgroundImage" />-->
-
-
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -110,26 +90,19 @@
         android:text="@string/defaults_name"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
-    <!--<CheckBox-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/sound"-->
-        <!--android:layout_below="@id/defaultsName"-->
-        <!--android:id="@+id/sound"/>-->
-
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/vibrate"
         android:layout_below="@+id/defaultsName"
-        android:id="@+id/vibrate"/>
+        android:id="@+id/vibrateCheckBox"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/priorityName"
         android:text="@string/priority"
-        android:layout_below="@id/vibrate"
+        android:layout_below="@id/vibrateCheckBox"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
 
     <Spinner

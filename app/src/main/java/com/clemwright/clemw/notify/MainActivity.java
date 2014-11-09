@@ -20,22 +20,19 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+
 public class MainActivity extends Activity {
 
     private Button send;
-//    private RadioGroup style;
     private Spinner priority;
-//    private CheckBox lights;
-    private CheckBox vibrate;
-//    private CheckBox sound;
-//    private CheckBox autocancel;
+
     private CheckBox remoteInput;
-//    private CheckBox wearableLike;
     private CheckBox bridgedLike;
     private CheckBox bigPictureStyle;
-//    private CheckBox backgroundImage;
     private CheckBox largeIcon;
     private SharedPreferences sharedPreferences;
+    private CheckBox vibrateCheckBox;
     private boolean vibrateDefault = true;
     SharedPreferences.Editor editor;
 
@@ -54,11 +51,9 @@ public class MainActivity extends Activity {
             }
         });
 
-//        style = (RadioGroup) findViewById(R.id.bigStyle);
-
         priority = (Spinner) findViewById(R.id.priority);
-        Integer[] priorities = new Integer[] {2,1,0,-1,-2};
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this,android.R.layout.simple_spinner_item, priorities);
+        Integer[] priorities = new Integer[]{2, 1, 0, -1, -2};
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, priorities);
 
         priority.setAdapter(adapter);
         int spinnerPosition = adapter.getPosition(0);
@@ -67,40 +62,50 @@ public class MainActivity extends Activity {
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-//        lights = (CheckBox) findViewById(R.id.lights);
-        vibrate = (CheckBox) findViewById(R.id.vibrate);
-//        sound = (CheckBox) findViewById(R.id.sound);
-//        autocancel = (CheckBox) findViewById(R.id.autocancel);
+        vibrateCheckBox = (CheckBox) findViewById(R.id.vibrateCheckBox);
+        vibrateCheckBox.setOnCheckedChangeListener(onCheckedChangeListener);
+
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
-//        wearableLike = (CheckBox) findViewById(R.id.wearableLike);
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
         bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
-//        backgroundImage = (CheckBox) findViewById(R.id.backgroundImage);
         largeIcon = (CheckBox) findViewById(R.id.largeIcon);
 
-        vibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        ArrayList<CheckBox> checkBoxes = new ArrayList<CheckBox>();
+        checkBoxes.add(remoteInput);
+        checkBoxes.add(bridgedLike);
+        checkBoxes.add(bigPictureStyle);
+        checkBoxes.add(largeIcon);
 
-
-                    editor.putBoolean(getString(R.string.vibrate), isChecked);
-                    editor.commit();
-
-//                    Toast.makeText(getApplicationContext(), (String.valueOf(isChecked)),
-//                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        );
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
+        }
     }
+
+    //Global On click listener for all views
+    final CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            int id = buttonView.getId();
+            String key = String.valueOf(id);
+
+            Message.message(getApplicationContext(), key);
+
+            editor.putBoolean(key, isChecked);
+            editor.commit();
+        }
+    };
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        boolean vibrateChecked = sharedPreferences.getBoolean(getString(R.string.vibrate), vibrateDefault);
 
-        vibrate.setChecked(vibrateChecked);
-//        if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
+        int id = vibrateCheckBox.getId();
+        String key = String.valueOf(id);
+
+        boolean vibrateChecked = sharedPreferences.getBoolean(key, vibrateDefault);
+        vibrateCheckBox.setChecked(vibrateChecked);
     }
 
 
@@ -116,7 +121,7 @@ public class MainActivity extends Activity {
         return bigPictureStyle;
     }
 
-    private  NotificationCompat.Action createVoiceReplyAction() {
+    private NotificationCompat.Action createVoiceReplyAction() {
 
         String replyLabel = getResources().getString(R.string.reply_label);
         String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
@@ -208,13 +213,13 @@ public class MainActivity extends Activity {
          */
         android.support.v4.app.NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_notification_icon)
-                .setContentTitle(getString(R.string.content_title))
-                .setContentText(getString(R.string.content_text))
+                        .setSmallIcon(R.drawable.ic_notification_icon)
+                        .setContentTitle(getString(R.string.content_title))
+                        .setContentText(getString(R.string.content_text))
 
 //                        .setAutoCancel(autocancel.isChecked())
 //                        .setPriority((Integer) priority.getSelectedItem())
-                .setPriority(2);
+                        .setPriority(2);
 
         if (largeIcon.isChecked()) {
             mBuilder.setLargeIcon(profilePhoto);
@@ -263,17 +268,7 @@ public class MainActivity extends Activity {
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-//        int selectedBigStyle = style.getCheckedRadioButtonId();
-//
-//        switch (selectedBigStyle) {
-//            case R.id.bigPictureStyle: mBuilder.setStyle(createBigPictureStyle());
-//                break;
-//            case R.id.bigTextStyle: mBuilder.setStyle(createBigTextStyle());
-//                break;
-//            case R.id.inboxStyle: mBuilder.setStyle(createInboxStyle(mBuilder));
-//            default:
-//                break;
-//        }
+
 
         /*
          * To create the notification itself, you call NotificationCompat.Builder.build(),
@@ -281,15 +276,14 @@ public class MainActivity extends Activity {
          */
         Notification mNotification = mBuilder.build();
 
-//        if (sound.isChecked()) mNotification.defaults = Notification.DEFAULT_SOUND;
-//        if (lights.isChecked()) mNotification.defaults = Notification.DEFAULT_LIGHTS;
-
-        //        int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
-//        long highScore = sharedPref.getInt(getString(R.string.saved_high_score), defaultValue);
-
         //TODO: set default value with a variable instead of "false"
 
-        boolean vibrateChecked = sharedPreferences.getBoolean(getString(R.string.vibrate), vibrateDefault);
+        int id = vibrateCheckBox.getId();
+        String key = String.valueOf(id);
+
+        Message.message(getApplicationContext(), key);
+
+        boolean vibrateChecked = sharedPreferences.getBoolean(key, vibrateDefault);
 
         if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
 
