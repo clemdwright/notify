@@ -34,7 +34,9 @@ public class MainActivity extends Activity {
     private SharedPreferences sharedPreferences;
     private CheckBox vibrateCheckBox;
     private boolean vibrateDefault = true;
+    private boolean largeIconDefault = true;
     SharedPreferences.Editor editor;
+    private ArrayList<CheckBox> checkBoxes;
 //    private Map<String, CompoundButton> map;
 
     // Key for the string that's delivered in the action's intent
@@ -63,21 +65,20 @@ public class MainActivity extends Activity {
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        vibrateCheckBox = (CheckBox) findViewById(R.id.vibrateCheckBox);
-        vibrateCheckBox.setOnCheckedChangeListener(onCheckedChangeListener);
+        //TODO: save priority in prefs, set it to 2 to start
 
+        vibrateCheckBox = (CheckBox) findViewById(R.id.vibrateCheckBox);
         remoteInput = (CheckBox) findViewById(R.id.remoteInput);
         bridgedLike = (CheckBox) findViewById(R.id.bridgedLike);
         bigPictureStyle = (CheckBox) findViewById(R.id.bigPictureStyle);
         largeIcon = (CheckBox) findViewById(R.id.largeIcon);
 
-
-
-        ArrayList<CheckBox> checkBoxes = new ArrayList<CheckBox>();
+        checkBoxes = new ArrayList<CheckBox>();
         checkBoxes.add(remoteInput);
         checkBoxes.add(bridgedLike);
         checkBoxes.add(bigPictureStyle);
         checkBoxes.add(largeIcon);
+        checkBoxes.add(vibrateCheckBox);
 
         for (CheckBox checkBox : checkBoxes) {
             checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -89,12 +90,9 @@ public class MainActivity extends Activity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-            int id = buttonView.getId();
-            String key = String.valueOf(id);
+            Message.message(getApplicationContext(), getKey(buttonView));
 
-            Message.message(getApplicationContext(), key);
-
-            editor.putBoolean(key, isChecked);
+            editor.putBoolean(getKey(buttonView), isChecked);
             editor.commit();
         }
     };
@@ -103,12 +101,18 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
 
-        int id = vibrateCheckBox.getId();
-        String key = String.valueOf(id);
+            checkBox.setChecked(sharedPreferences.getBoolean(getKey(checkBox), vibrateDefault));
+        }
 
-        boolean vibrateChecked = sharedPreferences.getBoolean(key, vibrateDefault);
-        vibrateCheckBox.setChecked(vibrateChecked);
+//
+//        boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), vibrateDefault);
+//        vibrateCheckBox.setChecked(vibrateChecked);
+//
+//        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIcon), largeIconDefault);
+//        largeIcon.setChecked(largeIconChecked);
     }
 
 
@@ -219,36 +223,35 @@ public class MainActivity extends Activity {
                         .setSmallIcon(R.drawable.ic_notification_icon)
                         .setContentTitle(getString(R.string.content_title))
                         .setContentText(getString(R.string.content_text))
+                        .setPriority((Integer) priority.getSelectedItem());
 
-//                        .setAutoCancel(autocancel.isChecked())
-//                        .setPriority((Integer) priority.getSelectedItem())
-                        .setPriority(2);
 
-        if (largeIcon.isChecked()) {
-            mBuilder.setLargeIcon(profilePhoto);
-        }
+        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIcon), largeIconDefault);
+
+        Message.message(getApplicationContext(), String.valueOf(largeIconChecked));
+
+        if (largeIconChecked) mBuilder.setLargeIcon(profilePhoto);
+//
+//
+//        if (largeIcon.isChecked()) {
+//            mBuilder.setLargeIcon(profilePhoto);
+//        }
+
+
+        //TODO: for each of these, pull from prefs instead of checking current checkbox state
 
         if (bridgedLike.isChecked()) {
             mBuilder.addAction(likeAction);
         }
 
+
+        //TODO: create big picture style ahead of time regardless, so it doesn't slow down notification sending
         if (bigPictureStyle.isChecked()) {
             mBuilder.setStyle(createBigPictureStyle());
         }
 
         NotificationCompat.WearableExtender wearableExtender =
                 new NotificationCompat.WearableExtender();
-
-        // If selected, adds the like action to the wearable extender
-//        if (wearableLike.isChecked()) {
-//            wearableExtender.addAction(likeAction);
-//        }
-
-        // If selected, set background image
-//        if (backgroundImage.isChecked()) {
-//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
-//            wearableExtender.setBackground(bitmap);
-//        }
 
         if (bridgedLike.isChecked() && remoteInput.isChecked()) {
             wearableExtender.addAction(likeAction);
@@ -279,8 +282,6 @@ public class MainActivity extends Activity {
          */
         Notification mNotification = mBuilder.build();
 
-        //TODO: set default value with a variable instead of "false"
-
         boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), vibrateDefault);
 
         if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
@@ -293,8 +294,6 @@ public class MainActivity extends Activity {
     }
 
     private String getKey(CompoundButton buttonView) {
-        int id = buttonView.getId();
-        String key = String.valueOf(id);
-        return key;
+        return String.valueOf(buttonView.getId());
     }
 }
