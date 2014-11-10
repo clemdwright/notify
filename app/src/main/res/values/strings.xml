@@ -2,40 +2,29 @@
 <resources>
 
     <string name="app_name">Notify</string>
+    <string name="title_activity_settings">Notification settings</string>
     <string name="title_activity_result">Photo</string>
-    <string name="result_text">This is the result activity.</string>
-    <string name="button_text">Send notification</string>
-    <string name="content_text">Nico tagged you in a photo.</string>
-    <string name="content_title">Notify</string>
-    <string name="big_picture_style">Big picture (tagged photo of Lou)</string>
-    <string name="big_text_style">BigTextStyle</string>
-    <string name="no_big_style">Standard</string>
-    <string name="inbox_style">InboxStyle</string>
-    <string name="lights">Lights</string>
-    <string name="vibrate">Vibrate</string>
-    <string name="sound">Sound</string>
-    <string name="long_text">"This is a very long string that has lots to say about the world and all of the lovely things in it and all the things we will do one day when we have the time and the money and the freedom and the desire."</string>
-    <string name="reply_text">This is the default reply text.</string>
-    <string name="reply_label">Comment</string>
-    <string name="like_label">Like</string>
-    <string name="bridged_name">ADDITIONAL</string>
-    <string name="wearable_name">WATCH ONLY</string>
-    <string name="like_action">Like action</string>
-    <string name="remote_input">Comment action on wearable</string>
-    <string name="priority">PRIORITY</string>
-    <string name="settings_name">Notification settings</string>
+    <string name="required_name">REQUIRED</string>
     <string name="small_icon">Small icon (heart image)</string>
-    <string name="large_icon">Large icon (Nico\'s profile picture)</string>
     <string name="content_title_name">Content title (\"Notify\")</string>
     <string name="content_text_name">Content text (\"Nico tagged you in a photo.\")</string>
-    <string name="required_name">REQUIRED</string>
-    <string name="defaults_name">ALERT</string>
-
-
+    <string name="content_text">Nico tagged you in a photo.</string>
+    <string name="content_title">Notify</string>
+    <string name="additional_name">ADDITIONAL</string>
+    <string name="large_icon">Large icon (Nico\'s profile picture)</string>
+    <string name="reply_label">Comment</string>
     <string-array name="reply_choices">
         <item>Hey babe</item>
         <item>Take a walk on the wild side</item>
         <item>Alright</item>
     </string-array>
+    <string name="like_label">Like</string>
+    <string name="like_action">Like action</string>
+    <string name="remote_input">Comment action on wearable</string>
+    <string name="big_picture_style">Big picture (tagged photo of Lou)</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="priority">PRIORITY</string>
+    <string name="alert_name">ALERT</string>
+    <string name="button_text">Send notification</string>
 
 </resources>

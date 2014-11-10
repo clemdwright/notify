@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,11 +43,13 @@ public class MainActivity extends Activity {
 
     //Send button
     private Button sendButton;
+    private Boolean autoCancel = true;
 
     //Notification enhancements
     private NotificationCompat.BigPictureStyle bigPictureStyle;
     private NotificationCompat.Action voiceReplyAction;
     private NotificationCompat.Action likeAction;
+    private Bitmap profilePhoto;
 
     //Constants
     private static final int DEFAULT_PRIORITY = 2;
@@ -129,6 +130,7 @@ public class MainActivity extends Activity {
         bigPictureStyle = createBigPictureStyle();
         voiceReplyAction = createVoiceReplyAction();
         likeAction = createLikeAction();
+        profilePhoto = BitmapFactory.decodeResource(getResources(), R.drawable.nico);
     }
 
     /*
@@ -147,6 +149,48 @@ public class MainActivity extends Activity {
         prioritySpinner.setSelection(spinnerPosition);
     }
 
+    /*
+     * sendNotification
+     */
+    private void sendNotification() {
+
+        int mNotificationId = NOTIFICATION_ID;
+
+        android.support.v4.app.NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_notification_icon)
+                        .setContentTitle(getString(R.string.content_title))
+                        .setContentText(getString(R.string.content_text))
+                        .setAutoCancel(autoCancel);
+
+        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIconCheckBox), checkBoxDefault);
+        boolean bridgedLikeChecked = sharedPreferences.getBoolean(getKey(bridgedLikeCheckBox), checkBoxDefault);
+        boolean bigPictureStyleChecked = sharedPreferences.getBoolean(getKey(bigPictureStyleCheckBox), checkBoxDefault);
+        boolean remoteInputChecked = sharedPreferences.getBoolean(getKey(remoteInputCheckBox), checkBoxDefault);
+        boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), checkBoxDefault);
+        int priority = sharedPreferences.getInt(getKey(prioritySpinner), DEFAULT_PRIORITY);
+
+        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
+
+        if (largeIconChecked) mBuilder.setLargeIcon(profilePhoto);
+        if (bridgedLikeChecked) mBuilder.addAction(likeAction);
+        if (bigPictureStyleChecked) mBuilder.setStyle(bigPictureStyle);
+        if (bridgedLikeChecked && remoteInputChecked) wearableExtender.addAction(likeAction);
+        if (remoteInputChecked) {
+            wearableExtender.addAction(voiceReplyAction);
+            mBuilder.extend(wearableExtender);
+        }
+
+        mBuilder.setPriority(priority);
+        mBuilder.extend(wearableExtender);
+        mBuilder.setContentIntent(createPendingIntent(OPENED_VALUE, OPENED_REQUEST_CODE));
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification mNotification = mBuilder.build();
+
+        if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
+
+        mNotificationManager.notify(mNotificationId, mNotification);
+    }
 
     /*
      * createBigPictureStyle
@@ -175,7 +219,6 @@ public class MainActivity extends Activity {
                 .setChoices(replyChoices)
                 .build();
 
-        // Create the reply action and add the remote input
         NotificationCompat.Action action =
                 new NotificationCompat.Action.Builder(R.drawable.ic_action_chat, replyLabel, replyPendingIntent)
                         .addRemoteInput(remoteInput)
@@ -185,6 +228,9 @@ public class MainActivity extends Activity {
 
     }
 
+    /*
+     * createPendingIntent
+     */
     private PendingIntent createPendingIntent(String extraValue, int requestCode) {
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(Utils.EXTRA_NAME, extraValue);
@@ -194,6 +240,9 @@ public class MainActivity extends Activity {
         return pendingIntent;
     }
 
+    /*
+     * createLikeAction
+     */
     private NotificationCompat.Action createLikeAction() {
         PendingIntent likePendingIntent = createPendingIntent(LIKED_VALUE, LIKED_REQUEST_CODE);
         NotificationCompat.Action likeAction =
@@ -203,83 +252,8 @@ public class MainActivity extends Activity {
     }
 
     /*
-     * Sends a notification.
-     * Adapted from https://developer.android.com/training/wearables/notifications/creating.html
+     * getKey
      */
-    private void sendNotification() {
-
-        // Allows you to update the notification later on.
-        int mNotificationId = NOTIFICATION_ID;
-
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, ResultActivity.class);
-
-
-        //TODO: abstract this out and use create pending intent code i just wrote. will need to pass activity as a param
-
-        //TODO: see if i need this back stack stuff... if so add it to creatependingintent method
-
-
-        resultIntent.putExtra("IntentType", "Opened");
-
-        /*
-         * The stack builder object will contain an artificial back stack for the
-         * started Activity. This ensures that navigating backward from the Activity
-         * leads out of your application to the Home screen.
-         */
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(ResultActivity.class);
-
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        OPENED_REQUEST_CODE,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        // Create bitmap from resource
-        Bitmap profilePhoto = BitmapFactory.decodeResource(getResources(), R.drawable.nico);
-
-        android.support.v4.app.NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setContentTitle(getString(R.string.content_title))
-                        .setContentText(getString(R.string.content_text));
-
-        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIconCheckBox), checkBoxDefault);
-        boolean bridgedLikeChecked = sharedPreferences.getBoolean(getKey(bridgedLikeCheckBox), checkBoxDefault);
-        boolean bigPictureStyleChecked = sharedPreferences.getBoolean(getKey(bigPictureStyleCheckBox), checkBoxDefault);
-        boolean remoteInputChecked = sharedPreferences.getBoolean(getKey(remoteInputCheckBox), checkBoxDefault);
-        boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), checkBoxDefault);
-        int priority = sharedPreferences.getInt(getKey(prioritySpinner), DEFAULT_PRIORITY);
-
-        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender();
-
-        if (largeIconChecked) mBuilder.setLargeIcon(profilePhoto);
-        if (bridgedLikeChecked) mBuilder.addAction(likeAction);
-        if (bigPictureStyleChecked) mBuilder.setStyle(bigPictureStyle);
-        if (bridgedLikeChecked && remoteInputChecked) wearableExtender.addAction(likeAction);
-        if (remoteInputChecked) {
-            wearableExtender.addAction(voiceReplyAction);
-            mBuilder.extend(wearableExtender);
-        }
-
-        mBuilder.setPriority(priority);
-        mBuilder.extend(wearableExtender);
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification mNotification = mBuilder.build();
-
-        if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
-
-        mNotificationManager.notify(mNotificationId, mNotification);
-    }
-
-    //Takes a view and returns its view ID as a String
     private String getKey(View view) {
         return String.valueOf(view.getId());
     }
