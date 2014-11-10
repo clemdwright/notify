@@ -7,21 +7,21 @@
     <string name="required_name">REQUIRED</string>
     <string name="small_icon">Small icon (heart image)</string>
     <string name="content_title_name">Content title (\"Notify\")</string>
-    <string name="content_text_name">Content text (\"Nico tagged you in a photo.\")</string>
-    <string name="content_text">Nico tagged you in a photo.</string>
+    <string name="content_text_name">Content text (\"Beyoncé tagged you in a photo.\")</string>
+    <string name="content_text">Beyoncé tagged you in a photo.</string>
     <string name="content_title">Notify</string>
     <string name="additional_name">ADDITIONAL</string>
-    <string name="large_icon">Large icon (Nico\'s profile picture)</string>
+    <string name="large_icon">Large icon (profile picture)</string>
     <string name="reply_label">Comment</string>
     <string-array name="reply_choices">
-        <item>Hey babe</item>
-        <item>Take a walk on the wild side</item>
-        <item>Alright</item>
+        <item>Omguh</item>
+        <item>I can\'t even</item>
+        <item>This. Just, this.</item>
     </string-array>
     <string name="like_label">Like</string>
     <string name="like_action">Like action</string>
     <string name="remote_input">Comment action on wearable</string>
-    <string name="big_picture_style">Big picture (tagged photo of Lou)</string>
+    <string name="big_picture_style">Big picture (tagged photo)</string>
     <string name="vibrate">Vibrate</string>
     <string name="priority">PRIORITY</string>
     <string name="alert_name">ALERT</string>

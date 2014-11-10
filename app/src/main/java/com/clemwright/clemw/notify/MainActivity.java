@@ -41,9 +41,10 @@ public class MainActivity extends Activity {
     private Spinner prioritySpinner;
     private ArrayAdapter<Integer> priorityAdapter;
 
-    //Send button
+    //Other
     private Button sendButton;
     private Boolean autoCancel = true;
+    NotificationManager mNotificationManager;
 
     //Notification enhancements
     private NotificationCompat.BigPictureStyle bigPictureStyle;
@@ -130,7 +131,10 @@ public class MainActivity extends Activity {
         bigPictureStyle = createBigPictureStyle();
         voiceReplyAction = createVoiceReplyAction();
         likeAction = createLikeAction();
-        profilePhoto = BitmapFactory.decodeResource(getResources(), R.drawable.nico);
+        profilePhoto = BitmapFactory.decodeResource(getResources(), R.drawable.beyonce);
+
+        //Notification manager
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /*
@@ -154,6 +158,7 @@ public class MainActivity extends Activity {
      */
     private void sendNotification() {
 
+        mNotificationManager.cancel(NOTIFICATION_ID);
         int mNotificationId = NOTIFICATION_ID;
 
         android.support.v4.app.NotificationCompat.Builder mBuilder =
@@ -184,7 +189,6 @@ public class MainActivity extends Activity {
         mBuilder.setPriority(priority);
         mBuilder.extend(wearableExtender);
         mBuilder.setContentIntent(createPendingIntent(OPENED_VALUE, OPENED_REQUEST_CODE));
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Notification mNotification = mBuilder.build();
 
         if (vibrateChecked) mNotification.defaults = Notification.DEFAULT_VIBRATE;
@@ -198,7 +202,7 @@ public class MainActivity extends Activity {
     private NotificationCompat.BigPictureStyle createBigPictureStyle() {
         NotificationCompat.BigPictureStyle bigPictureStyle =
                 new NotificationCompat.BigPictureStyle();
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.family);
         bigPictureStyle.bigPicture(bitmap);
         bigPictureStyle.setSummaryText(getString(R.string.content_text));
         return bigPictureStyle;

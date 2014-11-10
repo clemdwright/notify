@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.RemoteInput;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class ResultActivity extends Activity {
@@ -16,22 +15,16 @@ public class ResultActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        textView = (TextView) findViewById(R.id.reply);
+        textView = (TextView) findViewById(R.id.comment);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         Intent intent = getIntent();
         if (intent != null) {
-
-            String toastString = intent.getStringExtra("IntentType");
-
-            Toast.makeText(getApplicationContext(), toastString,
-                    Toast.LENGTH_SHORT).show();
-
+            Message.message(getApplicationContext(), intent.getStringExtra(Utils.EXTRA_NAME));
             textView.setText(getMessageText(intent));
         }
     }
