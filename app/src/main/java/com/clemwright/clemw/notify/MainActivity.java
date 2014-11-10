@@ -25,80 +25,48 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
+    //Shared preferences
     private SharedPreferences sharedPreferences;
-    private Button sendButton;
-    private Spinner prioritySpinner;
+    SharedPreferences.Editor editor;
+
+    //Check boxes
     private CheckBox remoteInputCheckBox;
     private CheckBox bridgedLikeCheckBox;
     private CheckBox bigPictureStyleCheckBox;
     private CheckBox largeIconCheckBox;
     private CheckBox vibrateCheckBox;
-    private boolean checkBoxDefault = false;
-    private boolean largeIconDefault = false;
-    SharedPreferences.Editor editor;
     private ArrayList<CheckBox> checkBoxes;
+    private boolean checkBoxDefault = false;
+
+    //Priority spinner
+    private Spinner prioritySpinner;
     private ArrayAdapter<Integer> priorityAdapter;
+
+    //Send button
+    private Button sendButton;
+
+    //Notification enhancements
     private NotificationCompat.BigPictureStyle bigPictureStyle;
     private NotificationCompat.Action voiceReplyAction;
     private NotificationCompat.Action likeAction;
 
-
+    //Constants
     private static final int DEFAULT_PRIORITY = 2;
-    private static final Integer[] priorities = new Integer[]{2, 1, 0, -1, -2};
+    private static final Integer[] PRIORITIES = new Integer[]{2, 1, 0, -1, -2};
     private static final int NOTIFICATION_ID = 0;
     private static final int OPENED_REQUEST_CODE = 0;
     private static final int LIKED_REQUEST_CODE = 1;
     private static final int COMMENTED_REQUEST_CODE = 2;
+    private static final String OPENED_VALUE = "Opened";
+    private static final String LIKED_VALUE = "Liked";
+    private static final String COMMENTED_VALUE = "Commented";
 
-    // Key for the string that's delivered in the action's intent
-    private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        sendButton = (Button) findViewById(R.id.button);
-        sendButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                sendNotification();
-            }
-        });
-
-        prioritySpinner = (Spinner) findViewById(R.id.prioritySpinner);
-        priorityAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, priorities);
-
-        prioritySpinner.setOnItemSelectedListener(onItemSelectedListener);
-
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        bigPictureStyle = createBigPictureStyle();
-        voiceReplyAction = createVoiceReplyAction();
-        likeAction = createLikeAction();
-
-        vibrateCheckBox = (CheckBox) findViewById(R.id.vibrateCheckBox);
-        remoteInputCheckBox = (CheckBox) findViewById(R.id.remoteInput);
-        bridgedLikeCheckBox = (CheckBox) findViewById(R.id.bridgedLike);
-        bigPictureStyleCheckBox = (CheckBox) findViewById(R.id.bigPictureStyle);
-        largeIconCheckBox = (CheckBox) findViewById(R.id.largeIcon);
-
-        checkBoxes = new ArrayList<CheckBox>();
-        checkBoxes.add(remoteInputCheckBox);
-        checkBoxes.add(bridgedLikeCheckBox);
-        checkBoxes.add(bigPictureStyleCheckBox);
-        checkBoxes.add(largeIconCheckBox);
-        checkBoxes.add(vibrateCheckBox);
-
-        for (CheckBox checkBox : checkBoxes) {
-            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
-        }
-    }
-
-    final AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+    //Listeners
+    private final AdapterView.OnItemSelectedListener onItemSelectedListener =
+            new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            editor.putInt(getKey(parentView), priorities[position]);
+            editor.putInt(getKey(parentView), PRIORITIES[position]);
             editor.commit();
         }
 
@@ -107,10 +75,7 @@ public class MainActivity extends Activity {
             // your code here
         }
     };
-
-
-    //Global On click listener for all views
-    final CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             editor.putBoolean(getKey(buttonView), isChecked);
@@ -118,7 +83,57 @@ public class MainActivity extends Activity {
         }
     };
 
+    /*
+     * onCreate
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
+        //Shared preferences
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        //Check boxes
+        vibrateCheckBox = (CheckBox) findViewById(R.id.vibrateCheckBox);
+        bigPictureStyleCheckBox = (CheckBox) findViewById(R.id.bigPictureStyle);
+        bridgedLikeCheckBox = (CheckBox) findViewById(R.id.bridgedLike);
+        remoteInputCheckBox = (CheckBox) findViewById(R.id.remoteInput);
+        largeIconCheckBox = (CheckBox) findViewById(R.id.largeIcon);
+        checkBoxes = new ArrayList<CheckBox>();
+        checkBoxes.add(remoteInputCheckBox);
+        checkBoxes.add(bridgedLikeCheckBox);
+        checkBoxes.add(bigPictureStyleCheckBox);
+        checkBoxes.add(largeIconCheckBox);
+        checkBoxes.add(vibrateCheckBox);
+        for (CheckBox checkBox : checkBoxes) {
+            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
+        }
+
+        //Priority spinner
+        prioritySpinner = (Spinner) findViewById(R.id.prioritySpinner);
+        priorityAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, PRIORITIES);
+        prioritySpinner.setAdapter(priorityAdapter);
+        prioritySpinner.setOnItemSelectedListener(onItemSelectedListener);
+
+        //Send button
+        sendButton = (Button) findViewById(R.id.button);
+        sendButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                sendNotification();
+            }
+        });
+
+        //Notification enhancements
+        bigPictureStyle = createBigPictureStyle();
+        voiceReplyAction = createVoiceReplyAction();
+        likeAction = createLikeAction();
+    }
+
+    /*
+     * onStart
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -127,84 +142,64 @@ public class MainActivity extends Activity {
             checkBox.setChecked(sharedPreferences.getBoolean(getKey(checkBox), checkBoxDefault));
         }
 
-        prioritySpinner.setAdapter(priorityAdapter);
         int priority = sharedPreferences.getInt(getKey(prioritySpinner), DEFAULT_PRIORITY);
         int spinnerPosition = priorityAdapter.getPosition(priority);
         prioritySpinner.setSelection(spinnerPosition);
-
-
-//
-//        boolean vibrateChecked = sharedPreferences.getBoolean(getKey(vibrateCheckBox), checkBoxDefault);
-//        vibrateCheckBox.setChecked(vibrateChecked);
-//
-//        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIconCheckBox), largeIconDefault);
-//        largeIconCheckBox.setChecked(largeIconChecked);
     }
 
 
+    /*
+     * createBigPictureStyle
+     */
     private NotificationCompat.BigPictureStyle createBigPictureStyle() {
         NotificationCompat.BigPictureStyle bigPictureStyle =
                 new NotificationCompat.BigPictureStyle();
-        // Create bitmap from resource
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lou);
-        // Add the bitmap to the big picture style
         bigPictureStyle.bigPicture(bitmap);
-        // Sets a summary for the big picture view
         bigPictureStyle.setSummaryText(getString(R.string.content_text));
         return bigPictureStyle;
     }
 
+    /*
+     * createVoiceReplyAction
+     */
     private NotificationCompat.Action createVoiceReplyAction() {
+
+        PendingIntent replyPendingIntent = createPendingIntent(COMMENTED_VALUE, COMMENTED_REQUEST_CODE);
 
         String replyLabel = getResources().getString(R.string.reply_label);
         String[] replyChoices = getResources().getStringArray(R.array.reply_choices);
 
-        RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+        RemoteInput remoteInput = new RemoteInput.Builder(Utils.EXTRA_VOICE_REPLY)
                 .setLabel(replyLabel)
                 .setChoices(replyChoices)
                 .build();
 
-        // Create an intent for the reply action
-        Intent replyIntent = new Intent(this, ResultActivity.class);
-
-        replyIntent.putExtra("IntentType", "Commented");
-
-        PendingIntent replyPendingIntent =
-                PendingIntent.getActivity(this, COMMENTED_REQUEST_CODE, replyIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-
         // Create the reply action and add the remote input
         NotificationCompat.Action action =
-                new NotificationCompat.Action(R.drawable.ic_action_chat,
-                        getString(R.string.reply_label), replyPendingIntent);
+                new NotificationCompat.Action.Builder(R.drawable.ic_action_chat, replyLabel, replyPendingIntent)
+                        .addRemoteInput(remoteInput)
+                        .build();
 
-        NotificationCompat.Action.Builder actionBuilder =
-                new NotificationCompat.Action.Builder(action);
-
-        actionBuilder.addRemoteInput(remoteInput);
-        NotificationCompat.Action newAction = actionBuilder.build();
-
-        return newAction;
+        return action;
 
     }
 
-    private NotificationCompat.Action createLikeAction() {
-        // Create an intent for the like action
-        Intent likeIntent = new Intent(this, ResultActivity.class);
-
-        likeIntent.putExtra("IntentType", "Liked");
-
-        PendingIntent likePendingIntent =
-                PendingIntent.getActivity(this, LIKED_REQUEST_CODE, likeIntent,
+    private PendingIntent createPendingIntent(String extraValue, int requestCode) {
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra(Utils.EXTRA_NAME, extraValue);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, requestCode, intent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
 
-        //Creates a like action that can be added to either wearable extender or normal notification
+    private NotificationCompat.Action createLikeAction() {
+        PendingIntent likePendingIntent = createPendingIntent(LIKED_VALUE, LIKED_REQUEST_CODE);
         NotificationCompat.Action likeAction =
                 new NotificationCompat.Action(R.drawable.ic_action_like,
                         getString(R.string.like_label), likePendingIntent);
-
         return likeAction;
-
     }
 
     /*
@@ -218,6 +213,12 @@ public class MainActivity extends Activity {
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ResultActivity.class);
+
+
+        //TODO: abstract this out and use create pending intent code i just wrote. will need to pass activity as a param
+
+        //TODO: see if i need this back stack stuff... if so add it to creatependingintent method
+
 
         resultIntent.putExtra("IntentType", "Opened");
 
@@ -249,7 +250,7 @@ public class MainActivity extends Activity {
                         .setContentTitle(getString(R.string.content_title))
                         .setContentText(getString(R.string.content_text));
 
-        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIconCheckBox), largeIconDefault);
+        boolean largeIconChecked = sharedPreferences.getBoolean(getKey(largeIconCheckBox), checkBoxDefault);
         boolean bridgedLikeChecked = sharedPreferences.getBoolean(getKey(bridgedLikeCheckBox), checkBoxDefault);
         boolean bigPictureStyleChecked = sharedPreferences.getBoolean(getKey(bigPictureStyleCheckBox), checkBoxDefault);
         boolean remoteInputChecked = sharedPreferences.getBoolean(getKey(remoteInputCheckBox), checkBoxDefault);

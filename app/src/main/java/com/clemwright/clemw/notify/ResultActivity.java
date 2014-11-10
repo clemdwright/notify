@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 public class ResultActivity extends Activity {
 
-    private static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
     private TextView textView;
 
     @Override
@@ -40,7 +39,7 @@ public class ResultActivity extends Activity {
     private CharSequence getMessageText(Intent intent) {
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {
-            return remoteInput.getCharSequence(EXTRA_VOICE_REPLY);
+            return remoteInput.getCharSequence(Utils.EXTRA_VOICE_REPLY);
         }
         return null;
     }
