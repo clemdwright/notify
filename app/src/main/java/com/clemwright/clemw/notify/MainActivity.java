@@ -158,6 +158,8 @@ public class MainActivity extends Activity {
      */
     private void sendNotification() {
 
+        //TODO: look back into the backstack code I removed. I think it is causing some nav issues.
+
         mNotificationManager.cancel(NOTIFICATION_ID);
         int mNotificationId = NOTIFICATION_ID;
 
